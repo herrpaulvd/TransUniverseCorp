@@ -1,51 +1,60 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
+using UnviersalMV;
 
-namespace Entities
+namespace Entities;
+
+public partial class Driver : IEntity
 {
-    /// <summary>
-    /// How best the driver actually drives
-    /// </summary>
-    public enum DriverQualificationClass
+    [NoPass]
+    public int Id { get; set; }
+
+    [PassSimple]
+    public string Name { get; set; } = null!;
+
+    public string Address { get; set; } = null!;
+
+    [PassSimple]
+    public string Email { get; set; } = null!;
+
+    [NoPass]
+    public int QualificationClasses { get; set; }
+
+    [NotMapped][WithName("QualificationClasses")]
+    public string Sqc
     {
-        D = 0,
-        C = 1,
-        B = 2,
-        A = 3,
-        S = 4
+        get => Helper.Int2Classes(QualificationClasses);
+        set => QualificationClasses = Helper.Classes2Int(value);
     }
 
-    /// <summary>
-    /// Space ship driver
-    /// </summary>
-    public class Driver
+    [NoPass]
+    public int SpaceshipClasses { get; set; }
+
+    [NotMapped][WithName("SpaceshipClasses")]
+    public string Ssc
     {
-        /// <summary>
-        /// DB PK
-        /// </summary>
-        public long ID { get; set; }
-        /// <summary>
-        /// Their name
-        /// </summary>
-        public string Name { get; set; }
-        /// <summary>
-        /// Current assigned qualification
-        /// </summary>
-        public DriverQualificationClass QualificationClass { get; set; }
-        /// <summary>
-        /// Current classes of spaceships they are allowed to drive
-        /// </summary>
-        public SpaceshipClass SpaceshipClasses { get; set; }
-        /// <summary>
-        /// Hiring cost per sec
-        /// </summary>
-        public long HiringCost { get; set; }
-        /// <summary>
-        /// Current position info
-        /// </summary>
-        public ScheduleElement CurrentState { get; set; }
+        get => Helper.Int2Classes(SpaceshipClasses);
+        set => SpaceshipClasses = Helper.Classes2Int(value);
     }
+
+    public long HiringCost { get; set; }
+
+    [NoPass]
+    public int? CurrentState { get; set; }
+
+    [NotMapped][WithName("CurrentState")]
+    public int CS
+    {
+        get => Helper.State2Int(CurrentState);
+        set => CurrentState = Helper.Int2State(value);
+    }
+
+    public virtual ScheduleElement? CurrentStateNavigation { get; set; }
+
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+
+    public virtual ICollection<ScheduleElement> ScheduleElements { get; set; } = new List<ScheduleElement>();
+
+    public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

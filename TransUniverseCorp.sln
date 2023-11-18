@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransUniverseCorp", "TransUniverseCorp\TransUniverseCorp.csproj", "{63A4CD6A-13BA-4B5A-AABF-0F9E60D164A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TransUniverseCorp", "TransUniverseCorp\TransUniverseCorp.csproj", "{63A4CD6A-13BA-4B5A-AABF-0F9E60D164A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entities.csproj", "{98D494AC-277C-4EA6-B7BA-46AD8F6EAE41}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemporaryNewNoSQLdatabaseNamedAfterSweetLadyLuck", "TemporaryNewNoSQLdatabaseNamedAfterSweetLadyLuck\TemporaryNewNoSQLdatabaseNamedAfterSweetLadyLuck.csproj", "{A8AF63A4-AFC9-4636-A1E5-81ABACA1A2F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entities.csproj", "{ECE807B1-B28A-436C-91C2-849018128D47}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnviersalMV", "UnviersalMV\UnviersalMV.csproj", "{52F90E42-CB99-4003-8A4D-059370957658}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +21,18 @@ Global
 		{63A4CD6A-13BA-4B5A-AABF-0F9E60D164A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63A4CD6A-13BA-4B5A-AABF-0F9E60D164A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63A4CD6A-13BA-4B5A-AABF-0F9E60D164A7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{98D494AC-277C-4EA6-B7BA-46AD8F6EAE41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{98D494AC-277C-4EA6-B7BA-46AD8F6EAE41}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{98D494AC-277C-4EA6-B7BA-46AD8F6EAE41}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{98D494AC-277C-4EA6-B7BA-46AD8F6EAE41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8AF63A4-AFC9-4636-A1E5-81ABACA1A2F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8AF63A4-AFC9-4636-A1E5-81ABACA1A2F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8AF63A4-AFC9-4636-A1E5-81ABACA1A2F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8AF63A4-AFC9-4636-A1E5-81ABACA1A2F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECE807B1-B28A-436C-91C2-849018128D47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECE807B1-B28A-436C-91C2-849018128D47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECE807B1-B28A-436C-91C2-849018128D47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECE807B1-B28A-436C-91C2-849018128D47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52F90E42-CB99-4003-8A4D-059370957658}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52F90E42-CB99-4003-8A4D-059370957658}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52F90E42-CB99-4003-8A4D-059370957658}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52F90E42-CB99-4003-8A4D-059370957658}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

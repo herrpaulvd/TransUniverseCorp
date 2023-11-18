@@ -1,7 +1,13 @@
+using System.Globalization;
+
+CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<Entities.TransUniverseDbContext>();
 
 var app = builder.Build();
 

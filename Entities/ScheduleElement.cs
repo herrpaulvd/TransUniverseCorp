@@ -1,51 +1,99 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
+using UnviersalMV;
 
-namespace Entities
+namespace Entities;
+
+public partial class ScheduleElement : IEntity
 {
-    /// <summary>
-    /// Current delivery schedule element
-    /// </summary>
-    public class ScheduleElement
+    [PassSimple]
+    public int Id { get; set; }
+
+    [NoPass]
+    public long DepartureOrArrival { get; set; }
+
+    [PassSimple]
+    [NotMapped]
+    [WithName("DepartureOrArrival")]
+    public string SDA
     {
-        /// <summary>
-        /// DB PK
-        /// </summary>
-        public int ID { get; set; }
-        /// <summary>
-        /// Departure if it is a stop, arrival if fly
-        /// </summary>
-        public DateTime DepartureOrArrival { get; set; }
-        /// <summary>
-        /// Planned departure or arrival
-        /// </summary>
-        public DateTime PlannedDepartureOrArrival { get; set; }
-        /// <summary>
-        /// Current order or NULL if driver flies to loading place
-        /// </summary>
-        public Order? Order { get; set; }
-        /// <summary>
-        /// Current spaceship or NULL if driver flies to the current spaceship location
-        /// </summary>
-        public Spaceship? Spaceship { get; set; }
-        /// <summary>
-        /// Current driver
-        /// </summary>
-        public Driver Driver { get; set; }
-        /// <summary>
-        /// Destination port if fly, otherwise stop port
-        /// </summary>
-        public SpacePort DestinationOrStop { get; set; }
-        /// <summary>
-        /// Whether it is a stop (otherwise fly)
-        /// </summary>
-        public bool IsStop { get; set; }
-        /// <summary>
-        /// Stop or fly time
-        /// </summary>
-        public TimeSpan Time { get; set; }
+        get => Helper.Time2String(DepartureOrArrival);
+        set => DepartureOrArrival = Helper.String2Time(value);
     }
+
+    public long? PlannedDepartureOrArrival { get; set; }
+
+    [PassSimple]
+    [NotMapped]
+    [WithName("PlannedDepartureOrArrival")]
+    public string SPDA
+    {
+        get => Helper.Time2StringWnull(PlannedDepartureOrArrival);
+        set => PlannedDepartureOrArrival = Helper.String2TimeWnull(value);
+    }
+
+    [PassSimple]
+    public int Order { get; set; }
+
+    [NoPass]
+    public int? Spaceship { get; set; }
+
+    [NotMapped]
+    [WithName("Spaceship")]
+    public string Sss
+    {
+        get => TransUniverseDbContext.Get(db => db.Spaceships.FirstOrDefault(e => e.Id == Spaceship)?.Name ?? "");
+        set => Spaceship = value.Length == 0 ? null : TransUniverseDbContext.Get(db => db.Spaceships.First(e => e.Name == value).Id);
+    }
+
+    [NoPass]
+    public int? Driver { get; set; }
+
+    [NotMapped]
+    [WithName("Driver")]
+    public string Sd
+    {
+        get => TransUniverseDbContext.Get(db => db.Drivers.FirstOrDefault(e => e.Id == Driver)?.Name ?? "");
+        set => Driver = value.Length == 0 ? null : TransUniverseDbContext.Get(db => db.Drivers.First(e => e.Name == value).Id);
+    }
+
+    [NoPass]
+    public int DestinationOrStop { get; set; }
+
+    [PassSimple]
+    [NotMapped]
+    [WithName("DestinationOrStop")]
+    public string SDO
+    {
+        get => TransUniverseDbContext.Get(db => db.SpacePorts.First(e => e.Id == DestinationOrStop).Name);
+        set => DestinationOrStop = TransUniverseDbContext.Get(db => db.SpacePorts.First(e => e.Name == value).Id);
+    }
+
+    public bool IsStop { get; set; }
+
+    [NoPass]
+    public long Time { get; set; }
+
+    [NotMapped]
+    [WithName("Time")]
+    public string ST
+    {
+        get => Helper.Time2String(Time);
+        set => Time = Helper.String2Time(value);
+    }
+
+    public virtual SpacePort DestinationOrStopNavigation { get; set; } = null!;
+
+    public virtual Driver? DriverNavigation { get; set; }
+
+    public virtual ICollection<Driver> Drivers { get; set; } = new List<Driver>();
+
+    public virtual Order OrderNavigation { get; set; } = null!;
+
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+
+    public virtual Spaceship? SpaceshipNavigation { get; set; }
+
+    public virtual ICollection<Spaceship> Spaceships { get; set; } = new List<Spaceship>();
 }

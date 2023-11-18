@@ -1,0 +1,39 @@
+﻿@model UnviersalMV.UniversalViewBag[]
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@{
+    int counter = 1;
+}
+
+@foreach(var m in Model)
+{
+    var formName = "f" + counter++;
+    <form name="@formName" method="get" action="./v/@m.Action">
+        @foreach (var p in m.Model.GetSimpleValues())
+        {
+            <label for="@p.Name">@p.Name</label>
+            var t = p.Type == "checkbox" ? "text" : p.Type;
+            <input type="@t" step="@p.Step" id="@p.Name" value="@p.Value" readonly="readonly" />
+        }
+        <input type="submit" value="Открыть" />
+    </form>
+    formName = "u" + formName;
+    <form name="@formName" method="get" action="./u/@m.Action">
+        <input type="submit" value="Изменить" />
+    </form>
+    formName = "d" + formName;
+    <form name="@formName" method="post" action="./d/@m.Action">
+        <input type="submit" value="Удалить" />
+    </form>
+}
+
+<form name="create" method="get" action="./new">
+    <input type="submit" value="Создать новый" style="margin-top: 30px" />
+</form>
+
+
+@{
+}

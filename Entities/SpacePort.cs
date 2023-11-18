@@ -1,45 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
+using UnviersalMV;
 
-namespace Entities
+namespace Entities;
+
+public partial class SpacePort : IEntity
 {
-    /// <summary>
-    /// Describes a space port
-    /// </summary>
-    public class SpacePort
-    {
-        /// <summary>
-        /// DB PK
-        /// </summary>
-        public long ID { get; set; }
-        /// <summary>
-        /// Port name
-        /// </summary>
-        public string Name { get; set; }
-        /// <summary>
-        /// About
-        /// </summary>
-        public string Description { get; set; }
+    [NoPass]
+    public int Id { get; set; }
 
-        // location:
-        /// <summary>
-        /// The planet where it is located
-        /// </summary>
-        public SpaceObject Planet { get; set; }
-        /// <summary>
-        /// Longtitude coordinate in sec
-        /// </summary>
-        public float Longtitude { get; set; }
-        /// <summary>
-        /// Latitude coordinate in sec
-        /// </summary>
-        public float Latitude { get; set; }
-        /// <summary>
-        /// Altitude in m
-        /// </summary>
-        public float Altitude { get; set; }
+    [PassSimple]
+    public string Name { get; set; } = null!;
+
+    public string Description { get; set; } = null!;
+
+    [NoPass]
+    public int Planet { get; set; }
+
+    [PassSimple]
+    [NotMapped]
+    [WithName("Planet")]
+    public string Sp
+    {
+        get => TransUniverseDbContext.Get(db => db.SpaceObjects.First(e => e.Id == Planet).Name);
+        set => Planet = TransUniverseDbContext.Get(db => db.SpaceObjects.First(e => e.Name == value).Id);
     }
+
+    public double Longtitude { get; set; }
+
+    public double Latitude { get; set; }
+
+    public double Altitude { get; set; }
+
+    public virtual ICollection<Order> OrderLoadingPortNavigations { get; set; } = new List<Order>();
+
+    public virtual ICollection<Order> OrderUnloadingPortNavigations { get; set; } = new List<Order>();
+
+    public virtual SpaceObject PlanetNavigation { get; set; } = null!;
+
+    public virtual ICollection<ScheduleElement> ScheduleElements { get; set; } = new List<ScheduleElement>();
 }

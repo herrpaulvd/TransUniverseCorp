@@ -1,35 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using UnviersalMV;
 
-namespace Entities
+namespace Entities;
+
+public partial class Customer : IEntity
 {
-    /// <summary>
-    /// Our loved client
-    /// </summary>
-    public class Customer
-    {
-        /// <summary>
-        /// DB PK
-        /// </summary>
-        public long ID { get; set; }
-        /// <summary>
-        /// Company or person name
-        /// </summary>
-        public string Name { get; set; }
-        /// <summary>
-        /// Commercial address
-        /// </summary>
-        public string Address { get; set; }
-        /// <summary>
-        /// The interspace efir mail address
-        /// </summary>
-        public string Email { get; set; }
-        /// <summary>
-        /// Whether this is a company
-        /// </summary>
-        public bool IsCorporative { get; set; }
-    }
+    [NoPass]
+    public int Id { get; set; }
+
+    [PassSimple]
+    public string Name { get; set; } = null!;
+
+    public string Address { get; set; } = null!;
+
+    [PassSimple]
+    public string Email { get; set; } = null!;
+
+    public bool Corporative { get; set; }
+
+    public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

@@ -1,56 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
+using UnviersalMV;
 
-namespace Entities
+namespace Entities;
+
+public partial class Spaceship : IEntity
 {
-    /// <summary>
-    /// Class of spaceship and classes set of driver
-    /// </summary>
-    [Flags]
-    public enum SpaceshipClass
+    [NoPass]
+    public int Id { get; set; }
+
+    [PassSimple]
+    public string Name { get; set; } = null!;
+
+    [PassSimple]
+    public string Model { get; set; } = null!;
+
+    [NoPass]
+    public int Class { get; set; }
+
+    [PassSimple]
+    [NotMapped][WithName("Class")]
+    public string Ssc
     {
-        None = 0b0,
-        C1 = 0b1,
-        C2 = 0b10,
-        C3 = 0b100,
+        get => Helper.Int2Classes(Class);
+        set => Class = Helper.Classes2Int(value);
     }
 
-    /// <summary>
-    /// Space ship
-    /// </summary>
-    public class Spaceship
+    public long UsageCost { get; set; }
+
+    public long Volume { get; set; }
+
+    [NoPass]
+    public int? CurrentState { get; set; }
+
+    [NotMapped][WithName("CurrentState")]
+    public int CS
     {
-        /// <summary>
-        /// DB PK
-        /// </summary>
-        public long ID { get; set; }
-        /// <summary>
-        /// Ship name
-        /// </summary>
-        public string Name { get; set; }
-        /// <summary>
-        /// Model name
-        /// </summary>
-        public string Model { get; set; }
-        /// <summary>
-        /// Spaceship class
-        /// </summary>
-        public SpaceshipClass Class { get; set; }
-        /// <summary>
-        /// Usage per sec cost
-        /// </summary>
-        public long UsageCost { get; set; }
-        /// <summary>
-        /// Max cargo volume in m^3
-        /// </summary>
-        public long Volume { get; set; }
-        /// <summary>
-        /// Current position info
-        /// </summary>
-        public ScheduleElement CurrentState { get; set; }
+        get => Helper.State2Int(CurrentState);
+        set => CurrentState = Helper.Int2State(value);
     }
+
+    public virtual ScheduleElement CurrentStateNavigation { get; set; } = null!;
+
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+
+    public virtual ICollection<ScheduleElement> ScheduleElements { get; set; } = new List<ScheduleElement>();
 }
