@@ -54,8 +54,8 @@ create table [Orders] (
 
 create table ScheduleElements (
 	id int primary key identity(1,1),
-	departureOrArrival bigint not null, --ticks
-	plannedDepartureOrArrival bigint null, --ticks
+	departureOrArrival bigint null, --ticks
+	plannedDepartureOrArrival bigint not null, --ticks
 	[order] int not null, --FK
 	spaceship int null, --FK
 	driver int null, --FK

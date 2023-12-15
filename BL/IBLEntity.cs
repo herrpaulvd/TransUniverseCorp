@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Entities
+namespace BL
 {
-    public interface IEntity
+    public interface IBLEntity
     {
         public int Id { get; set; }
     }

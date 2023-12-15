@@ -1,10 +1,12 @@
-﻿using System;
+﻿using BL.Repos;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BL.Repos;
 
-namespace Entities
+namespace BL
 {
     internal static class Helper
     {
@@ -52,5 +54,17 @@ namespace Entities
 
         public static string Time2StringWnull(long? time) => time.HasValue ? new DateTime(time.Value).ToString() : "";
         public static long? String2TimeWnull(string s) => s.Length == 0 ? null : DateTime.Parse(s).Ticks;
+
+        public static TEntity? GetSafely<TEntity>(this IUniversalRepo<TEntity> repo, int? id)
+            where TEntity : class, IBLEntity, new()
+        {
+            return id.HasValue ? repo.Get(id.Value) : null;
+        }
+
+        public static TEntity? FindByNameSafely<TEntity>(this IExtendedRepo<TEntity> repo, string? name)
+            where TEntity : class, INamedBLEntity, new()
+        {
+            return (name is null || name.Length == 0) ? null : repo.FindByName(name);
+        }
     }
 }

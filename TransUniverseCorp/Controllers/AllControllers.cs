@@ -1,4 +1,4 @@
-﻿using Entities;
+﻿using BL;
 using Microsoft.AspNetCore.Mvc;
 
 namespace TransUniverseCorp.Controllers
@@ -7,71 +7,71 @@ namespace TransUniverseCorp.Controllers
     [Route("customer")]
     public class CustomerController : UniversalControllerBase<Customer>
     {
-        public CustomerController(TransUniverseDbContext context)
-            : base(context, context.Customers, i => context.Customers.First(c => c.Id == i), c => c.Id) { }
+        public CustomerController()
+            : base(rk => rk.CustomerRepo) { }
     }
 
     [Controller]
     [Route("driver")]
     public class DriverController : UniversalControllerBase<Driver>
     {
-        public DriverController(TransUniverseDbContext context)
-            : base(context, context.Drivers, i => context.Drivers.First(c => c.Id == i), c => c.Id) { }
+        public DriverController()
+            : base(rk => rk.DriverRepo) { }
     }
 
     [Controller]
     [Route("edge")]
     public class EdgeController : UniversalControllerBase<Edge>
     {
-        public EdgeController(TransUniverseDbContext context)
-            : base(context, context.Edges, i => context.Edges.First(c => c.Id == i), c => c.Id) { }
+        public EdgeController()
+            : base(rk => rk.EdgeRepo) { }
     }
 
     [Controller]
     [Route("order")]
     public class OrderController : UniversalControllerBase<Order>
     {
-        public OrderController(TransUniverseDbContext context)
-            : base(context, context.Orders, i => context.Orders.First(c => c.Id == i), c => c.Id) { }
+        public OrderController()
+            : base(rk => rk.OrderRepo) { }
     }
 
     [Controller]
     [Route("schedule")]
     public class ScheduleElementController : UniversalControllerBase<ScheduleElement>
     {
-        public ScheduleElementController(TransUniverseDbContext context)
-            : base(context, context.ScheduleElements, i => context.ScheduleElements.First(c => c.Id == i), c => c.Id) { }
+        public ScheduleElementController()
+            : base(rk => rk.ScheduleElementRepo) { }
     }
 
     [Controller]
     [Route("spaceobject")]
     public class SpaceObjectController : UniversalControllerBase<SpaceObject>
     {
-        public SpaceObjectController(TransUniverseDbContext context)
-            : base(context, context.SpaceObjects, i => context.SpaceObjects.First(c => c.Id == i), c => c.Id) { }
+        public SpaceObjectController()
+            : base(rk => rk.SpaceObjectRepo) { }
     }
 
     [Controller]
     [Route("spaceport")]
     public class SpacePortController : UniversalControllerBase<SpacePort>
     {
-        public SpacePortController(TransUniverseDbContext context)
-            : base(context, context.SpacePorts, i => context.SpacePorts.First(c => c.Id == i), c => c.Id) { }
+        public SpacePortController()
+            : base(rk => rk.SpacePortRepo) { }
     }
 
     [Controller]
     [Route("spaceship")]
     public class SpaceshipController : UniversalControllerBase<Spaceship>
     {
-        public SpaceshipController(TransUniverseDbContext context)
-            : base(context, context.Spaceships, i => context.Spaceships.First(c => c.Id == i), c => c.Id) { }
+        public SpaceshipController()
+            : base(rk => rk.SpaceshipRepo) { }
     }
 
     [Controller]
     [Route("user")]
     public class UserController : UniversalControllerBase<User>
     {
-        public UserController(TransUniverseDbContext context)
-            : base(context, context.Users, i => context.Users.First(c => c.Id == i), c => c.Id) { }
+        public UserController()
+            : base(rk => rk.UserRepo) { }
     }
 }

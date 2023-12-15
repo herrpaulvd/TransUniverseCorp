@@ -14,6 +14,8 @@ namespace UnviersalMV
         private readonly Dictionary<string, PropertyInfo> getSimple = [];
         private readonly Dictionary<string, PropertyInfo> set = [];
 
+        private static bool IsHidden(PropertyInfo p) => p.GetCustomAttribute<HiddenAttribute>() is not null;
+
         private static bool IsString(PropertyInfo p) => p.PropertyType == typeof(string);
 
         private static bool IsBool(PropertyInfo p) => p.PropertyType == typeof(bool);
@@ -77,7 +79,9 @@ namespace UnviersalMV
                 var name = kv.Key;
                 var p = kv.Value;
                 string type, step;
-                if (IsString(p))
+                if (IsHidden(p))
+                    (type, step) = ("hidden", "1");
+                else if (IsString(p))
                     (type, step) = ("text", "1");
                 else if (IsBool(p))
                     (type, step) = ("checkbox", "1");

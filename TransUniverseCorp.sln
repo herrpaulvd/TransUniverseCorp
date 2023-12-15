@@ -5,11 +5,11 @@ VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TransUniverseCorp", "TransUniverseCorp\TransUniverseCorp.csproj", "{63A4CD6A-13BA-4B5A-AABF-0F9E60D164A7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemporaryNewNoSQLdatabaseNamedAfterSweetLadyLuck", "TemporaryNewNoSQLdatabaseNamedAfterSweetLadyLuck\TemporaryNewNoSQLdatabaseNamedAfterSweetLadyLuck.csproj", "{A8AF63A4-AFC9-4636-A1E5-81ABACA1A2F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "Entities\Entities.csproj", "{ECE807B1-B28A-436C-91C2-849018128D47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entities.csproj", "{ECE807B1-B28A-436C-91C2-849018128D47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnviersalMV", "UnviersalMV\UnviersalMV.csproj", "{52F90E42-CB99-4003-8A4D-059370957658}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnviersalMV", "UnviersalMV\UnviersalMV.csproj", "{52F90E42-CB99-4003-8A4D-059370957658}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BL", "BL\BL.csproj", "{EC4F5D6F-E587-4A77-997A-EABDFA2B7CAA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +21,6 @@ Global
 		{63A4CD6A-13BA-4B5A-AABF-0F9E60D164A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63A4CD6A-13BA-4B5A-AABF-0F9E60D164A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63A4CD6A-13BA-4B5A-AABF-0F9E60D164A7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A8AF63A4-AFC9-4636-A1E5-81ABACA1A2F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A8AF63A4-AFC9-4636-A1E5-81ABACA1A2F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A8AF63A4-AFC9-4636-A1E5-81ABACA1A2F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A8AF63A4-AFC9-4636-A1E5-81ABACA1A2F1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{ECE807B1-B28A-436C-91C2-849018128D47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{ECE807B1-B28A-436C-91C2-849018128D47}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ECE807B1-B28A-436C-91C2-849018128D47}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +29,10 @@ Global
 		{52F90E42-CB99-4003-8A4D-059370957658}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52F90E42-CB99-4003-8A4D-059370957658}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52F90E42-CB99-4003-8A4D-059370957658}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC4F5D6F-E587-4A77-997A-EABDFA2B7CAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC4F5D6F-E587-4A77-997A-EABDFA2B7CAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC4F5D6F-E587-4A77-997A-EABDFA2B7CAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC4F5D6F-E587-4A77-997A-EABDFA2B7CAA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
