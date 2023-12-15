@@ -17,7 +17,7 @@ body {
   margin-bottom: 60px;
 }
 
-input, label {
+input, label, button {
     display: block;
 }
 
