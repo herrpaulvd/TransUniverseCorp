@@ -13,6 +13,6 @@ namespace BL.Repos
         TEntity? Get(int id);
         void Delete(TEntity entity);
         void Update(TEntity entity);
-        void Add(TEntity entity);
+        int Add(TEntity entity);
     }
 }

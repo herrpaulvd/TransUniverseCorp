@@ -1,0 +1,46 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model ICollection<(BL.Order, string)>
+
+<div>Make new order:</div>
+
+<form method="post" action="./orderlist">
+    <label>Loading Port</label>
+    <input name="loading" type="text"/>
+    <label>Loading Time</label>
+    <input name="ltime" type="text" />
+    <label>Unloading Port</label>
+    <input name="unloading" type="text" />
+    <label>Unloading Time</label>
+    <input name="utime" type="text" />
+    <label>Volume</label>
+    <input name="volume" type="number" step="1" />
+    <input type="submit" value="CREATE" />
+</form>
+
+<div>Orders list</div>
+
+@foreach(var (order, status) in Model)
+{
+    @if(order is null)
+    {
+        <div>Error: @status</div>
+    }
+    else
+    {
+        <div>---</div>
+        <div>Loading Port: @order.SLP</div>
+        <div>Loading Time: @order.SLT</div>
+        <div>Unloading Port: @order.SUP</div>
+        <div>Unloading Time: @order.SUT</div>
+        <div>Volume: @order.Volume</div>
+        <div>Driver: @order.ShowDriver</div>
+        <div>Spaceship: @order.ShowSpaceship</div>
+        <div>Status: @status</div>
+        <div>---</div>
+    }
+}

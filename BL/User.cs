@@ -20,7 +20,7 @@ public partial class User : IBLEntity
     public int? Customer { get; set; }
 
     [WithName("Customer")]
-    public string Sc
+    public string CustomerName
     {
         get => RepoKeeper.Instance.CustomerRepo.GetSafely(Customer)?.Name ?? "";
         set => Customer = RepoKeeper.Instance.CustomerRepo.FindByNameSafely(value)?.Id;
@@ -30,7 +30,7 @@ public partial class User : IBLEntity
     public int? Driver { get; set; }
 
     [WithName("Driver")]
-    public string Sd
+    public string DriverName
     {
         get => RepoKeeper.Instance.DriverRepo.GetSafely(Driver)?.Name ?? "";
         set => Driver = RepoKeeper.Instance.DriverRepo.FindByNameSafely(value)?.Id;
@@ -41,7 +41,7 @@ public partial class User : IBLEntity
 
     [PassSimple]
     [WithName("Roles")]
-    public string SR
+    public string RolesAsString
     {
         get => Helper.Int2Classes(Roles);
         set => Roles = Helper.Classes2Int(value);

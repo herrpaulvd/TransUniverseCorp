@@ -108,14 +108,19 @@ namespace BL.ReposImpl
 
         public void Update(TBLEntity entity)
         {
-            entities.Update(GetDalEntity(entity)!);
+            var dalEntity = GetDalEntity(entity)!;
+            entities.Update(dalEntity);
             context.SaveChanges();
+            context.Entry(dalEntity).State = EntityState.Detached;
         }
 
-        public void Add(TBLEntity entity)
+        public int Add(TBLEntity entity)
         {
-            entities.Add(GetDalEntity(entity)!);
+            var dalEntity = GetDalEntity(entity)!;
+            entities.Add(dalEntity);
             context.SaveChanges();
+            context.Entry(dalEntity).State = EntityState.Detached;
+            return dalEntity.Id;
         }
     }
 }

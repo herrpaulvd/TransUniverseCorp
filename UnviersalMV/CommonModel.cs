@@ -96,9 +96,35 @@ namespace UnviersalMV
             return result;
         }
 
+        private static IList<PropertyValue> GetDefaultValues(Dictionary<string, PropertyInfo> properties, object origin)
+        {
+            var result = new List<PropertyValue>();
+            foreach (var kv in properties)
+            {
+                var name = kv.Key;
+                var p = kv.Value;
+                string type, step, value;
+                if (IsHidden(p))
+                    (type, step, value) = ("hidden", "1", "0");
+                else if (IsString(p))
+                    (type, step, value) = ("text", "1", "");
+                else if (IsBool(p))
+                    (type, step, value) = ("checkbox", "1", "false");
+                else if (IsInt(p))
+                    (type, step, value) = ("number", "1", "0");
+                else if (IsFloat(p))
+                    (type, step, value) = ("number", "0.001", "0");
+                else
+                    throw new Exception("Internal error");
+                result.Add(new PropertyValue(name, value, type, step));
+            }
+            return result;
+        }
+
         public IList<PropertyValue> GetAllValues() => GetValues(get, origin);
         public IList<PropertyValue> GetSimpleValues() => GetValues(getSimple, origin);
         public IList<PropertyValue> GetSettableValues() => GetValues(set, origin);
+        public IList<PropertyValue> GetDefaultSettableValues() => GetDefaultValues(set, origin);
 
         public bool SetValue(string name, string value)
         {

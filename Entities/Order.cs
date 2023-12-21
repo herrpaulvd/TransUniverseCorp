@@ -27,11 +27,17 @@ public partial class Order : IDALEntity
 
     public int Driver { get; set; }
 
+    public int Customer { get; set; }
+
     public int CurrentState { get; set; }
+
+    public int Status { get; set; }
 
     public virtual ScheduleElement CurrentStateNavigation { get; set; } = null!;
 
     public virtual Driver DriverNavigation { get; set; } = null!;
+
+    public virtual Customer CustomerNavigation { get; set; } = null!;
 
     public virtual SpacePort LoadingPortNavigation { get; set; } = null!;
 

@@ -55,6 +55,9 @@ namespace BL
         public static string Time2StringWnull(long? time) => time.HasValue ? new DateTime(time.Value).ToString() : "";
         public static long? String2TimeWnull(string s) => s.Length == 0 ? null : DateTime.Parse(s).Ticks;
 
+        public static string TimeSpan2String(long time) => new TimeSpan(time).ToString();
+        public static long String2TimeSpan(string s) => TimeSpan.Parse(s).Ticks;
+
         public static TEntity? GetSafely<TEntity>(this IUniversalRepo<TEntity> repo, int? id)
             where TEntity : class, IBLEntity, new()
         {

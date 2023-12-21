@@ -63,15 +63,15 @@ public partial class Order : IBLEntity
     [WithName("TotalTime")]
     public string ST
     {
-        get => Helper.Time2String(TotalTime);
-        set => TotalTime = Helper.String2Time(value);
+        get => Helper.TimeSpan2String(TotalTime);
+        set => TotalTime = Helper.String2TimeSpan(value);
     }
 
     [NoPass]
     public int Spaceship { get; set; }
 
     [WithName("Spaceship")]
-    public string Sss
+    public string ShowSpaceship
     {
         get => RepoKeeper.Instance.SpaceshipRepo.Get(Spaceship)!.Name;
         set => Spaceship = RepoKeeper.Instance.SpaceshipRepo.FindByName(value)!.Id;
@@ -81,11 +81,27 @@ public partial class Order : IBLEntity
     public int Driver { get; set; }
 
     [WithName("Driver")]
-    public string Sd
+    public string ShowDriver
     {
         get => RepoKeeper.Instance.DriverRepo.Get(Driver)!.Name;
         set => Driver = RepoKeeper.Instance.DriverRepo.FindByName(value)!.Id;
     }
 
+    [NoPass]
+    public int Customer { get; set; }
+
+    [WithName("Customer")]
+    public string Sc
+    {
+        get => RepoKeeper.Instance.CustomerRepo.Get(Customer)!.Name;
+        set => Customer = RepoKeeper.Instance.CustomerRepo.FindByName(value)!.Id;
+    }
+
     public int CurrentState { get; set; }
+
+    public int Status { get; set; }
+
+    public const int STATUS_FAILED = -1;
+    public const int STATUS_WIP = 0;
+    public const int STATUS_DONE = 1;
 }

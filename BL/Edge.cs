@@ -38,8 +38,8 @@ public partial class Edge : IBLEntity
     [WithName("Time")]
     public string ST
     {
-        get => Helper.Time2String(Time);
-        set => Time = Helper.String2Time(value);
+        get => Helper.TimeSpan2String(Time);
+        set => Time = Helper.String2TimeSpan(value);
     }
 
     [NoPass]

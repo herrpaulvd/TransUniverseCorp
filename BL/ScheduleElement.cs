@@ -21,18 +21,18 @@ public partial class ScheduleElement : IBLEntity
         set => DepartureOrArrival = Helper.String2TimeWnull(value);
     }
 
-    public long PlannedDepartureOrArrival { get; set; }
+    public long? PlannedDepartureOrArrival { get; set; }
 
     [PassSimple]
     [WithName("PlannedDepartureOrArrival")]
-    public string SPDA
+    public string ShowPlannedDepartureOrArrival
     {
-        get => Helper.Time2String(PlannedDepartureOrArrival);
-        set => PlannedDepartureOrArrival = Helper.String2Time(value);
+        get => Helper.Time2StringWnull(PlannedDepartureOrArrival);
+        set => PlannedDepartureOrArrival = Helper.String2TimeWnull(value);
     }
 
     [PassSimple]
-    public int Order { get; set; }
+    public int? Order { get; set; }
 
     [NoPass]
     public int? Spaceship { get; set; }
@@ -55,14 +55,14 @@ public partial class ScheduleElement : IBLEntity
     }
 
     [NoPass]
-    public int DestinationOrStop { get; set; }
+    public int? DestinationOrStop { get; set; }
 
     [PassSimple]
     [WithName("DestinationOrStop")]
-    public string SDO
+    public string DestinationOrStopPortName
     {
-        get => RepoKeeper.Instance.SpacePortRepo.Get(DestinationOrStop)!.Name;
-        set => DestinationOrStop = RepoKeeper.Instance.SpacePortRepo.FindByName(value)!.Id;
+        get => RepoKeeper.Instance.SpacePortRepo.GetSafely(DestinationOrStop)?.Name ?? "";
+        set => DestinationOrStop = RepoKeeper.Instance.SpacePortRepo.FindByNameSafely(value)?.Id;
     }
 
     public bool IsStop { get; set; }
@@ -70,10 +70,19 @@ public partial class ScheduleElement : IBLEntity
     [NoPass]
     public long Time { get; set; }
 
-    [WithName("Time")]
-    public string ST
+    public int? Next { get; set; }
+
+    [WithName("Next")]
+    public int ShowNext
     {
-        get => Helper.Time2String(Time);
-        set => Time = Helper.String2Time(value);
+        get => Helper.State2Int(Next);
+        set => Next = Helper.Int2State(value);
     }
+
+    //[WithName("Time")]
+    //public string ST
+    //{
+    //    get => Helper.Time2String(Time);
+    //    set => Time = Helper.String2Time(value);
+    //}
 }

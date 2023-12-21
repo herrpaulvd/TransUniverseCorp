@@ -15,7 +15,7 @@
 
 <form method="post" action="./@Model.Action">
 
-    @foreach (var p in Model.Model.GetSettableValues())
+    @foreach (var p in Model.PrintDefault ? Model.Model.GetDefaultSettableValues() : Model.Model.GetSettableValues())
     {
         @if(p.Type == "checkbox")
         {
@@ -36,7 +36,10 @@
         }
         else
         {
-            <label for="@p.Name">@p.Name</label>
+            @if (p.Type != "hidden")
+            {
+                <label for="@p.Name">@p.Name</label>
+            }
             <input type="@p.Type" step="@p.Step" id="@p.Name" value="@p.Value" name="@p.Name" />
         }
     }

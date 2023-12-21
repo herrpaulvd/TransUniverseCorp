@@ -85,7 +85,7 @@ namespace TransUniverseCorp.Controllers
         [NonAction]
         private IActionResult ConstructNewAction(string? error)
         {
-            var m = new UniversalViewBag(CommonModel.Create<T>(), "new", error);
+            var m = new UniversalViewBag(CommonModel.Create<T>(), "new", error) { PrintDefault = true };
             return View("CommonUpdate", m);
         }
 

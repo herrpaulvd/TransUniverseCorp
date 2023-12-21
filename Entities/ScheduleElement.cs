@@ -10,19 +10,25 @@ public partial class ScheduleElement : IDALEntity
 
     public long? DepartureOrArrival { get; set; }
 
-    public long PlannedDepartureOrArrival { get; set; }
+    public long? PlannedDepartureOrArrival { get; set; }
 
-    public int Order { get; set; }
+    public int? Order { get; set; }
 
     public int? Spaceship { get; set; }
 
     public int? Driver { get; set; }
 
-    public int DestinationOrStop { get; set; }
+    public int? DestinationOrStop { get; set; }
 
     public bool IsStop { get; set; }
 
     public long Time { get; set; }
+
+    public int? Next { get; set; }
+
+    public virtual ScheduleElement? NextNavigation { get; set; } = null!;
+
+    public virtual ICollection<ScheduleElement>? Prevs { get; set; } = new List<ScheduleElement>();
 
     public virtual SpacePort DestinationOrStopNavigation { get; set; } = null!;
 

@@ -9,10 +9,16 @@ namespace BL.Repos
     public interface ICustomerRepo : IExtendedRepo<Customer> { }
     public interface IDriverRepo : IExtendedRepo<Driver> { }
     public interface IEdgeRepo : IUniversalRepo<Edge> { }
-    public interface IOrderRepo : IUniversalRepo<Order> { }
+    public interface IOrderRepo : IUniversalRepo<Order>
+    {
+        ICollection<Order> GetOrdersByCustomer(int customerID);
+    }
     public interface IScheduleElementRepo : IUniversalRepo<ScheduleElement> { }
     public interface ISpaceObjectRepo : IExtendedRepo<SpaceObject> { }
     public interface ISpacePortRepo : IExtendedRepo<SpacePort> { }
     public interface ISpaceshipRepo : IExtendedRepo<Spaceship> { }
-    public interface IUserRepo : IUniversalRepo<User> { }
+    public interface IUserRepo : IUniversalRepo<User>
+    {
+        User? FindByLogin(string login);
+    }
 }

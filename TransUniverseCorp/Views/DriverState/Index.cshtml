@@ -1,0 +1,37 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model DriverFormData
+
+@if (Model.Error is not null)
+{
+    <div>@Model.Error</div>
+}
+
+<form method="post" action = "./drvst/leave">
+    <label>Port</label>
+    <input name="port" type="text" value="@(Model.CurrentScheduleElement?.DestinationOrStopPortName ?? "")" />
+    <input type="submit" value="GO LEAVING"/>
+</form>
+
+@{
+    var se = Model.CurrentScheduleElement;
+}
+
+@if(Model.HasOrder && se is not null)
+{
+    <form method="post" action="./drvst/next">
+        <label>Stop or flight</label>
+        <input name="stop" type="text" readonly="readonly" value="@(se.IsStop ? "Stop" : "Flight")" />
+        <label>Port</label>
+        <input name="port" type="text" readonly="readonly" value="@se.DestinationOrStopPortName" />
+        <label>Planned Arrival/Departure</label>
+        <input name="time" type="text" readonly="readonly" value="@se.ShowPlannedDepartureOrArrival" />
+        <label>Current Time</label>
+        <input name="time" type="text" readonly="readonly" value="@DateTime.Now.ToString()" />
+        <input type="submit" value="GO NEXT" />
+    </form>
+}

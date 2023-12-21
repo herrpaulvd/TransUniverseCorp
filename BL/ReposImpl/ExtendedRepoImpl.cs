@@ -20,7 +20,9 @@ namespace BL.ReposImpl
 
         public TBLEntity? FindByName(string name)
         {
-            return GetBLEntity(entities.FirstOrDefault(e => e.Name == name));
+            var dalEntity = entities.FirstOrDefault(e => e.Name == name);
+            if(dalEntity is not null) context.Entry(dalEntity).State = EntityState.Detached;
+            return GetBLEntity(dalEntity);
         }
     }
 }

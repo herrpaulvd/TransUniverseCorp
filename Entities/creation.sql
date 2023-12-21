@@ -49,19 +49,22 @@ create table [Orders] (
 	totalTime bigint not null,
 	spaceship int not null, --FK
 	driver int not null, --FK
-	currentState int not null --FK
+	customer int not null, --FK
+	currentState int not null, --FK
+	[status] int not null
 )
 
 create table ScheduleElements (
 	id int primary key identity(1,1),
 	departureOrArrival bigint null, --ticks
-	plannedDepartureOrArrival bigint not null, --ticks
-	[order] int not null, --FK
+	plannedDepartureOrArrival bigint null, --ticks
+	[order] int null, --FK
 	spaceship int null, --FK
 	driver int null, --FK
-	destinationOrStop int not null, --FK
+	destinationOrStop int null, --FK
 	isStop bit not null,
-	time bigint not null --ticks
+	time bigint not null, --ticks
+	[next] int null -- FK
 )
 
 create table SpaceObjects (
@@ -146,6 +149,12 @@ alter table Orders
 go
 
 alter table Orders
+	add constraint Orders_FK_Customer
+	foreign key (customer)
+	references Customers(id)
+go
+
+alter table Orders
 	add constraint Orders_FK_CurrentState
 	foreign key (currentState)
 	references ScheduleElements(id)
@@ -173,6 +182,12 @@ alter table ScheduleElements
 	add constraint ScheduleElements_FK_DestinationOrStop
 	foreign key (destinationOrStop)
 	references Spaceports(id)
+go
+
+alter table ScheduleElements
+	add constraint ScheduleElements_FK_ScheduleElements
+	foreign key ([next])
+	references ScheduleElements(id)
 go
 
 alter table SpaceObjects

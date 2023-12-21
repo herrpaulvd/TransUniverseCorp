@@ -6,7 +6,10 @@
 
 @foreach (var p in Model.Model.GetAllValues())
 {
-    <label for="@p.Name">@p.Name</label>
+    @if (p.Type != "hidden")
+    {
+        <label for="@p.Name">@p.Name</label>
+    }
     var t = p.Type == "checkbox" ? "text" : p.Type;
     <input type="@t" step="@p.Step" id="@p.Name" value="@p.Value" readonly="readonly" />
 }

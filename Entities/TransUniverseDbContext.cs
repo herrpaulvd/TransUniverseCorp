@@ -115,6 +115,7 @@ public partial class TransUniverseDbContext : DbContext
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CurrentState).HasColumnName("currentState");
             entity.Property(e => e.Driver).HasColumnName("driver");
+            entity.Property(e => e.Customer).HasColumnName("customer");
             entity.Property(e => e.LoadingPort).HasColumnName("loadingPort");
             entity.Property(e => e.LoadingTime).HasColumnName("loadingTime");
             entity.Property(e => e.Spaceship).HasColumnName("spaceship");
@@ -123,6 +124,7 @@ public partial class TransUniverseDbContext : DbContext
             entity.Property(e => e.UnloadingPort).HasColumnName("unloadingPort");
             entity.Property(e => e.UnloadingTime).HasColumnName("unloadingTime");
             entity.Property(e => e.Volume).HasColumnName("volume");
+            entity.Property(e => e.Status).HasColumnName("status");
 
             entity.HasOne(d => d.CurrentStateNavigation).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.CurrentState)
@@ -133,6 +135,11 @@ public partial class TransUniverseDbContext : DbContext
                 .HasForeignKey(d => d.Driver)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("Orders_FK_Driver");
+
+            entity.HasOne(d => d.CustomerNavigation).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.Customer)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("Orders_FK_Customer");
 
             entity.HasOne(d => d.LoadingPortNavigation).WithMany(p => p.OrderLoadingPortNavigations)
                 .HasForeignKey(d => d.LoadingPort)
@@ -163,6 +170,12 @@ public partial class TransUniverseDbContext : DbContext
             entity.Property(e => e.PlannedDepartureOrArrival).HasColumnName("plannedDepartureOrArrival");
             entity.Property(e => e.Spaceship).HasColumnName("spaceship");
             entity.Property(e => e.Time).HasColumnName("time");
+            entity.Property(e => e.Next).HasColumnName("next");
+
+            entity.HasOne(d => d.NextNavigation).WithMany(p => p.Prevs)
+                .HasForeignKey(d => d.Next)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ScheduleElements_FK_ScheduleElements");
 
             entity.HasOne(d => d.DestinationOrStopNavigation).WithMany(p => p.ScheduleElements)
                 .HasForeignKey(d => d.DestinationOrStop)

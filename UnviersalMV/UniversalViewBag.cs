@@ -11,5 +11,6 @@ namespace UnviersalMV
         public CommonModel Model { get; } = model;
         public string Action { get; } = action;
         public string? Error { get; } = error;
+        public bool PrintDefault { get; set; } = false;
     }
 }

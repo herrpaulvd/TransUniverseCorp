@@ -16,4 +16,6 @@ public partial class Customer : INamedDALEntity
     public bool Corporative { get; set; }
 
     public virtual ICollection<User> Users { get; set; } = new List<User>();
+
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 }
