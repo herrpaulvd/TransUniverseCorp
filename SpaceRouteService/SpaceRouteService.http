@@ -3,4 +3,7 @@
 GET {{SpaceRouteService_HostAddress}}/weatherforecast/
 Accept: application/json
 
+GET {{SpaceRouteService_HostAddress}}/spaceport/findbyname
+Accept: text/plain
+
 ###

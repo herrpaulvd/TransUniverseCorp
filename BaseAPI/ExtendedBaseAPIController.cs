@@ -10,16 +10,16 @@ namespace BaseAPI
         { }
 
         [HttpGet]
-        [Route("findbyname")]
-        public HttpResponseMessage FindByName()
+        [Route("findbyname/{name}")]
+        public IActionResult FindByName(string? name)
         {
             try
             {
-                return Push(((IExtendedRepo<T>)Repo).FindByName(ReadRequest()));
+                return Push(((IExtendedRepo<T>)Repo).FindByName(name!));
             }
             catch (Exception)
             {
-                return MakeResponse("", false);
+                return NotFound();
             }
         }
     }

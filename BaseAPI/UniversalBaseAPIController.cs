@@ -18,18 +18,9 @@ namespace BaseAPI
             this.getRepo = getRepo;
         }
 
-        protected HttpResponseMessage MakeResponse(string content, bool successful)
+        protected IActionResult Push(object? obj)
         {
-            HttpResponseMessage response = new(successful ? HttpStatusCode.OK : HttpStatusCode.NotFound)
-            {
-                Content = new StringContent(content, Encoding.UTF8, "application/json")
-            };
-            return response;
-        }
-
-        protected HttpResponseMessage Push(object? obj)
-        {
-            if (obj is null) return MakeResponse("", false);
+            if (obj is null) return NotFound();
             CommonModel model = new(obj);
             JObject json = [];
             try
@@ -39,12 +30,12 @@ namespace BaseAPI
             }
             catch (Exception)
             {
-                return MakeResponse("", false);
+                return NotFound();
             }
-            return MakeResponse(json.ToString(), true);
+            return Content(json.ToString());
         }
 
-        protected HttpResponseMessage PushArray<TItem>(IList<TItem> array)
+        protected IActionResult PushArray<TItem>(IList<TItem> array)
         {
             JArray result = new();
             foreach(var obj in array)
@@ -58,11 +49,11 @@ namespace BaseAPI
                 }
                 catch (Exception)
                 {
-                    return MakeResponse("", false);
+                    return NotFound();
                 }
                 result.Add(json);
             }
-            return MakeResponse(result.ToString(), true);
+            return Content(result.ToString());
         }
 
         protected bool Pull(object obj, string src)
@@ -88,28 +79,30 @@ namespace BaseAPI
         {
             using (var reader = new StreamReader(Request.Body))
             {
-                return reader.ReadToEnd();
+                var result = reader.ReadToEndAsync().Result;
+                Console.WriteLine("Request body:\n" + result + "\n\n\n");
+                return result;
             }
         }
 
         [HttpPost]
         [Route("delete/{id:int}")]
-        public HttpResponseMessage Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             try
             {
                 Repo.Delete(Repo.Get(id!.Value!)!);
-                return MakeResponse("", true);
+                return Ok();
             }
             catch(Exception)
             {
-                return MakeResponse("", false);
+                return NotFound();
             }
         }
 
         [HttpGet]
         [Route("get/{id:int}")]
-        public HttpResponseMessage Get(int? id)
+        public IActionResult Get(int? id)
         {
             try
             {
@@ -117,13 +110,13 @@ namespace BaseAPI
             }
             catch(Exception)
             {
-                return MakeResponse("", false);
+                return NotFound();
             }
         }
 
         [HttpGet]
         [Route("all")]
-        public HttpResponseMessage GetAll()
+        public IActionResult GetAll()
         {
             try
             {
@@ -131,43 +124,40 @@ namespace BaseAPI
             }
             catch(Exception)
             {
-                return MakeResponse("", false);
+                return NotFound();
             }
         }
 
         [HttpPost]
         [Route("update/{id:int}")]
-        public HttpResponseMessage Update(int? id)
+        public IActionResult Update(int? id)
         {
             try
             {
                 T entity = new();
                 Pull(entity, ReadRequest());
                 Repo.Update(entity);
-                return MakeResponse("", true);
+                return Ok();
             }
             catch(Exception)
             {
-                return MakeResponse("", false);
+                return NotFound();
             }
         }
 
         [HttpPost]
         [Route("add")]
-        public HttpResponseMessage Add()
+        public IActionResult Add()
         {
             try
             {
                 T entity = new();
-                using (var reader = new StreamReader(Request.Body))
-                {
-                    Pull(entity, reader.ReadToEnd());
-                }
-                return MakeResponse(Repo.Add(entity).ToString(), true);
+                Pull(entity, ReadRequest());
+                return Content(Repo.Add(entity).ToString());
             }
             catch(Exception)
             {
-                return MakeResponse("", false);
+                return NotFound();
             }
         }
     }

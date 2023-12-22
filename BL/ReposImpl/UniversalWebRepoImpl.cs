@@ -57,12 +57,11 @@ namespace BL.ReposImpl
             return PushString(json.ToString(), suburl);
         }
 
-        protected string? PullString(string suburl, string? requestBody = null)
+        protected string? PullString(string suburl)
         {
             using (var client = new HttpClient())
             {
                 HttpRequestMessage request = new(HttpMethod.Get, url + suburl);
-                if (requestBody is not null) request.Content = new StringContent(requestBody);
                 var response = client.SendAsync(request).Result;
                 if (!response.IsSuccessStatusCode)
                     return null;
@@ -70,10 +69,10 @@ namespace BL.ReposImpl
             }
         }
 
-        protected bool Pull(object obj, string suburl, string? requestBody = null)
+        protected bool Pull(object obj, string suburl)
         {
             CommonModel model = new(obj);
-            var response = PullString(suburl, requestBody);
+            var response = PullString(suburl);
             if(response is null) return false;
             JObject json = JObject.Parse(response);
             try

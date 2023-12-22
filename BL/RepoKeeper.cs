@@ -36,24 +36,31 @@ namespace BL
         {
             var executingAssembly = Assembly.GetEntryAssembly();
             if (executingAssembly is null) return;
+            var currentAssembly = typeof(RepoKeeper).Assembly;
             var RKType = executingAssembly.GetTypes().FirstOrDefault(
                 t => t.IsSubclassOf(typeof(RepoKeeperInfo))
                 && t.GetConstructors().Any(c => c.GetParameters().Length == 0));
             if (RKType is null) return;
             var repoKeeperInfo = (RepoKeeperInfo)Activator.CreateInstance(RKType)!;
             var fields = typeof(RepoKeeper)
-                .GetFields()
-                .Where(f => f.Name.EndsWith("Impl")).ToList();
-            foreach(var (repoType, url) in repoKeeperInfo.PresetRepos)
+                .GetFields(BindingFlags.NonPublic | BindingFlags.Instance)
+                //.Where(f => f.Name.EndsWith("Impl"))
+                .ToDictionary(f => f.FieldType.Name);
+            foreach( var field in fields )
             {
-                foreach (var field in fields)
-                    if (repoType.IsSubclassOf(field.FieldType))
-                    {
-                        field.SetValue(this, url is null
-                            ? Activator.CreateInstance(repoType)
-                            : Activator.CreateInstance(repoType, url));
-                        break;
-                    }
+                Console.WriteLine(field.Key);
+            }
+            foreach(var (entity, url) in repoKeeperInfo.PresetRepos)
+            {
+                var suffix = url is null ? "RepoImpl" : "WebRepoImpl";
+                var entityRepoTypeName = $"BL.ReposImpl.{entity}{suffix}";
+                Console.WriteLine(entityRepoTypeName);
+                var interfaceName = $"I{entity}Repo";
+                var repoType = currentAssembly.GetType(entityRepoTypeName)!;
+                fields[interfaceName].SetValue(
+                    this, url is null
+                    ? Activator.CreateInstance(repoType)
+                    : Activator.CreateInstance(repoType, url));
             }
         }
 
