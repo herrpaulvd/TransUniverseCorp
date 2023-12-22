@@ -13,7 +13,7 @@ namespace TransUniverseCorp.Controllers
     public abstract class UniversalControllerBase<T> : Controller where T : class, IBLEntity, new()
     {
         private Func<RepoKeeper, IUniversalRepo<T>> getRepo;
-        private IUniversalRepo<T> Repo => getRepo(RepoKeeper.Instance);
+        protected IUniversalRepo<T> Repo => getRepo(RepoKeeper.Instance);
 
         public UniversalControllerBase(Func<RepoKeeper, IUniversalRepo<T>> getRepo)
         {

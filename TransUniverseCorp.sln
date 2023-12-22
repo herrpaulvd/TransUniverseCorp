@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BL", "BL\BL.csproj", "{EC4F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Microservices", "Microservices", "{0FBC462D-F4EC-456A-B9F0-CCDCFDDBE2F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceRouteService", "SpaceRouteService\SpaceRouteService.csproj", "{010A1842-19EC-44CE-A8D8-B43D247B46C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpaceRouteService", "SpaceRouteService\SpaceRouteService.csproj", "{010A1842-19EC-44CE-A8D8-B43D247B46C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseAPI", "BaseAPI\BaseAPI.csproj", "{C6D66ACD-5D29-44F9-BD54-C58F6E2FCC54}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,10 @@ Global
 		{010A1842-19EC-44CE-A8D8-B43D247B46C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{010A1842-19EC-44CE-A8D8-B43D247B46C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{010A1842-19EC-44CE-A8D8-B43D247B46C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6D66ACD-5D29-44F9-BD54-C58F6E2FCC54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6D66ACD-5D29-44F9-BD54-C58F6E2FCC54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6D66ACD-5D29-44F9-BD54-C58F6E2FCC54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6D66ACD-5D29-44F9-BD54-C58F6E2FCC54}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
