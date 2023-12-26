@@ -46,15 +46,10 @@ namespace BL
                 .GetFields(BindingFlags.NonPublic | BindingFlags.Instance)
                 //.Where(f => f.Name.EndsWith("Impl"))
                 .ToDictionary(f => f.FieldType.Name);
-            foreach( var field in fields )
-            {
-                Console.WriteLine(field.Key);
-            }
             foreach(var (entity, url) in repoKeeperInfo.PresetRepos)
             {
                 var suffix = url is null ? "RepoImpl" : "WebRepoImpl";
                 var entityRepoTypeName = $"BL.ReposImpl.{entity}{suffix}";
-                Console.WriteLine(entityRepoTypeName);
                 var interfaceName = $"I{entity}Repo";
                 var repoType = currentAssembly.GetType(entityRepoTypeName)!;
                 fields[interfaceName].SetValue(

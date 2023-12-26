@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TransUniverseCorp.Models;
 using System.Security.Claims;
+using IdentityModel.Client;
 
 namespace TransUniverseCorp.Controllers
 {
@@ -51,22 +52,40 @@ namespace TransUniverseCorp.Controllers
             return View(ConstructData(error));
         }
 
+        private bool SetAccessToken(HttpClient mainClient)
+        {
+            using HttpClient client = new();
+            var disco = client.GetDiscoveryDocumentAsync(ServiceAddress.IdentityServer).Result;
+            if (disco.IsError) return false;
+            var tokenResponse = client.RequestClientCredentialsTokenAsync(new()
+            {
+                Address = disco.TokenEndpoint,
+                ClientId = "mainAPP",
+                ClientSecret = "superpupersecurepassword228",
+                Scope = "allapi"
+            }).Result;
+            if (tokenResponse.IsError) return false;
+            mainClient.SetBearerToken(tokenResponse.AccessToken!);
+            return true;
+        }
+
         [HttpPost]
         [Route("leave")]
         public IActionResult Leave()
         {
             int? id = GetDriverId();
-            if(id is null) return Redirect("../.?error=NOT%20A%20DRIVER");
+            if(id is null) return Redirect("/drvst?error=NOT%20A%20DRIVER");
             string port = Request.Form["port"]!;
             port = "p" + (port ?? "");
             using(HttpClient client = new())
             {
+                if(!SetAccessToken(client)) return Redirect("/drvst?error=SERVICE%20UNAVAIlABLE");
                 HttpRequestMessage request = new(HttpMethod.Post, $"{ServiceAddress.Driver}/drvst/leave/{id.Value}/{port}");
                 var response = client.SendAsync(request).Result;
                 if(response is null)
-                    return Redirect("../.?error=INVALID%20PORT");
+                    return Redirect("/drvst?error=INVALID%20PORT");
                 else
-                    return Redirect("../");
+                    return Redirect("/drvst");
             }
         }
 
@@ -75,15 +94,16 @@ namespace TransUniverseCorp.Controllers
         public IActionResult Next()
         {
             int? id = GetDriverId();
-            if (id is null) return Redirect("../.?error=INVALID%20OPERATION");
+            if (id is null) return Redirect("/drvst?error=INVALID%20OPERATION");
             using (HttpClient client = new())
             {
+                if (!SetAccessToken(client)) return Redirect("/drvst?error=SERVICE%20UNAVAIlABLE");
                 HttpRequestMessage request = new(HttpMethod.Post, $"{ServiceAddress.Driver}/drvst/next/{id.Value}");
                 var response = client.SendAsync(request).Result;
                 if (response is null)
-                    return Redirect("../.?error=INVALID%20OPERATION");
+                    return Redirect("/drvst?error=INVALID%20OPERATION");
                 else
-                    return Redirect("../");
+                    return Redirect("/drvst");
             }
         }
     }

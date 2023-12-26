@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using BL.Repos;
 using Entities;
+using IdentityModel.Client;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using System;
@@ -25,10 +26,28 @@ namespace BL.ReposImpl
             this.url = url;
         }
 
+        private bool SetAccessToken(HttpClient mainClient)
+        {
+            using HttpClient client = new();
+            var disco = client.GetDiscoveryDocumentAsync(ServiceAddress.IdentityServer).Result;
+            if (disco.IsError) return false;
+            var tokenResponse = client.RequestClientCredentialsTokenAsync(new()
+            {
+                Address = disco.TokenEndpoint,
+                ClientId = "mainAPP",
+                ClientSecret = "superpupersecurepassword228",
+                Scope = "allapi"
+            }).Result;
+            if (tokenResponse.IsError) return false;
+            mainClient.SetBearerToken(tokenResponse.AccessToken!);
+            return true;
+        }
+
         protected string? PushString(string s, string suburl)
         {
             using (var client = new HttpClient())
             {
+                if(!SetAccessToken(client)) return null;
                 HttpRequestMessage request = new(HttpMethod.Post, url + suburl)
                 {
                     Content = new StringContent(s)
@@ -61,6 +80,7 @@ namespace BL.ReposImpl
         {
             using (var client = new HttpClient())
             {
+                if(!SetAccessToken(client)) return null;
                 HttpRequestMessage request = new(HttpMethod.Get, url + suburl);
                 var response = client.SendAsync(request).Result;
                 if (!response.IsSuccessStatusCode)

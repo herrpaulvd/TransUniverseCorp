@@ -1,10 +1,12 @@
 ﻿using BaseAPI;
 using BL;
 using BL.Repos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SpaceRouteService.Controllers
 {
+    [Authorize]
     [Controller]
     [Route("edge")]
     public class EdgeController : UniversalBaseAPIController<Edge>
@@ -13,6 +15,7 @@ namespace SpaceRouteService.Controllers
             : base(rk => rk.EdgeRepo) { }
     }
 
+    [Authorize]
     [Controller]
     [Route("order")]
     public class OrderController : UniversalBaseAPIController<Order>
@@ -29,6 +32,7 @@ namespace SpaceRouteService.Controllers
         }
     }
 
+    [Authorize]
     [Controller]
     [Route("schedule")]
     public class ScheduleElementController : UniversalBaseAPIController<ScheduleElement>
@@ -37,6 +41,7 @@ namespace SpaceRouteService.Controllers
             : base(rk => rk.ScheduleElementRepo) { }
     }
 
+    [Authorize]
     [Controller]
     [Route("spaceobject")]
     public class SpaceObjectController : ExtendedBaseAPIController<SpaceObject>
@@ -45,6 +50,7 @@ namespace SpaceRouteService.Controllers
             : base(rk => rk.SpaceObjectRepo) { }
     }
 
+    [Authorize]
     [Controller]
     [Route("spaceport")]
     public class SpacePortController : ExtendedBaseAPIController<SpacePort>

@@ -1,5 +1,6 @@
 ﻿using BL;
 using BL.Repos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SharedModels;
@@ -8,6 +9,7 @@ using System.Security.Claims;
 
 namespace SpaceRouteService.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("/makeorder")]
     public class MakeOrderController : Controller

@@ -11,7 +11,7 @@ namespace SharedModels
         private readonly List<(object? obj, DateTime creation)> kept = [];
 
         private bool IsFree(int index)
-            => kept[index].obj is null || (DateTime.Now - kept[index].creation).TotalHours > 1;
+            => index >= kept.Count || kept[index].obj is null || (DateTime.Now - kept[index].creation).TotalHours > 1;
 
         private void Set(int index, object obj)
         {
@@ -31,7 +31,7 @@ namespace SharedModels
             }
         }
 
-        public object? Get(int index) => kept[index];
+        public object? Get(int index) => kept[index].obj;
 
         public void Free(int index) => kept[index] = default;
 

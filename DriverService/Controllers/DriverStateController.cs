@@ -1,9 +1,11 @@
 ﻿using BL.Repos;
 using BL;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DriverService.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("/drvst")]
     public class DriverStateController : Controller
@@ -13,11 +15,6 @@ namespace DriverService.Controllers
         private IOrderRepo OrderRepo => RepoKeeper.Instance.OrderRepo;
         private ISpacePortRepo SpacePortRepo => RepoKeeper.Instance.SpacePortRepo;
         private ISpaceshipRepo SpaceshipRepo => RepoKeeper.Instance.SpaceshipRepo;
-
-        public IActionResult Index()
-        {
-            return View();
-        }
 
         private ScheduleElement? GetScheduleElement(Driver driver)
             => driver.CurrentState.HasValue ? ScheduleElementRepo.Get(driver.CurrentState.Value) : null;

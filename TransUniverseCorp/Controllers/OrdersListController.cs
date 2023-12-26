@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Hosting;
 using TransUniverseCorp.Models;
 using SharedModels;
+using IdentityModel.Client;
 
 namespace TransUniverseCorp.Controllers
 {
@@ -52,9 +53,26 @@ namespace TransUniverseCorp.Controllers
         }
 
         [Route("")]
-        public IActionResult Index()
+        public IActionResult Index(string? error)
         {
-            return IndexWithError(null);
+            return IndexWithError(error);
+        }
+
+        private bool SetAccessToken(HttpClient mainClient)
+        {
+            using HttpClient client = new();
+            var disco = client.GetDiscoveryDocumentAsync(ServiceAddress.IdentityServer).Result;
+            if (disco.IsError) return false;
+            var tokenResponse = client.RequestClientCredentialsTokenAsync(new()
+            {
+                Address = disco.TokenEndpoint,
+                ClientId = "mainAPP",
+                ClientSecret = "superpupersecurepassword228",
+                Scope = "allapi"
+            }).Result;
+            if (tokenResponse.IsError) return false;
+            mainClient.SetBearerToken(tokenResponse.AccessToken!);
+            return true;
         }
 
         [HttpPost]
@@ -64,6 +82,7 @@ namespace TransUniverseCorp.Controllers
             string index = Request.Form["index"]!;
             using(HttpClient client = new())
             {
+                if (!SetAccessToken(client)) return Redirect("/orderlist?error=SERVICE%20UNAVAILABLE");
                 HttpRequestMessage request = new(HttpMethod.Post, ServiceAddress.SpaceRoute + "/makeorder/commit/" + index);
                 var response = client.SendAsync(request).Result;
                 return Redirect("/orderlist");
@@ -86,6 +105,7 @@ namespace TransUniverseCorp.Controllers
 
             using(HttpClient client = new())
             {
+                if (!SetAccessToken(client)) return Redirect("/orderlist?error=SERVICE%20UNAVAILABLE");
                 HttpRequestMessage request = new(HttpMethod.Post, ServiceAddress.SpaceRoute + "/makeorder")
                 {
                     Content = JsonContent.Create(new BuildOrderRequest()

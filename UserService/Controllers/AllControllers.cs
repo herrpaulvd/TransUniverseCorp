@@ -3,9 +3,11 @@ using BL.Repos;
 using BaseAPI;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace UserService.Controllers
 {
+    [Authorize]
     [Controller]
     [Route("user")]
     public class UserController : UniversalBaseAPIController<User>
