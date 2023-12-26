@@ -31,8 +31,16 @@ public partial class ScheduleElement : IBLEntity
         set => PlannedDepartureOrArrival = Helper.String2TimeWnull(value);
     }
 
-    [PassSimple]
+    [NoPass]
     public int? Order { get; set; }
+
+    [PassSimple]
+    [WithName("Order")]
+    public int ShowOrder
+    {
+        get => Helper.State2Int(Order);
+        set => Order = Helper.Int2State(value);
+    }
 
     [NoPass]
     public int? Spaceship { get; set; }

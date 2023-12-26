@@ -1,11 +1,20 @@
-﻿namespace SpaceRouteService.RepoKeeperSettings
+﻿using BL;
+
+namespace SpaceRouteService.RepoKeeperSettings
 {
     public class SpaceRouteRepoKeeperInfo : BL.RepoSettings.RepoKeeperInfo
     {
         public SpaceRouteRepoKeeperInfo()
         {
-            //temp so
-            //AddPresetRepo()
+            // customer
+            AddPresetRepo("Customer", ServiceAddress.Customer + "/customer");
+
+            // driver
+            AddPresetRepo("Driver", ServiceAddress.Driver + "/driver");
+            AddPresetRepo("Spaceship", ServiceAddress.Driver + "/spaceship");
+
+            // user
+            AddPresetRepo("User", ServiceAddress.User + "/user");
         }
     }
 }

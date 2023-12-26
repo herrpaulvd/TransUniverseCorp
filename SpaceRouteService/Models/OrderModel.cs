@@ -1,6 +1,6 @@
 ﻿using BL;
 
-namespace TransUniverseCorp.Models
+namespace SpaceRouteService.Models
 {
     public class OrderModel
     {
@@ -14,6 +14,7 @@ namespace TransUniverseCorp.Models
         public long LoadingTime { get; set; }
         public long UnloadingTime { get; set; }
         public long TotalTime { get; set; }
-        public long Volume {  get; set; }
+        public long Volume { get; set; }
+        public int Customer { get; set; }
     }
 }

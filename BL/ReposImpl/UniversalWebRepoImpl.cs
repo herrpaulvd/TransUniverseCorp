@@ -74,6 +74,12 @@ namespace BL.ReposImpl
             CommonModel model = new(obj);
             var response = PullString(suburl);
             if(response is null) return false;
+
+            if(obj is ScheduleElement)
+            {
+                Console.WriteLine("here");
+            }
+
             JObject json = JObject.Parse(response);
             try
             {

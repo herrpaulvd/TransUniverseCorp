@@ -1,10 +1,10 @@
 ﻿using BL;
 
-namespace TransUniverseCorp.RepoKeeperSettings
+namespace CustomerService.RepoKeeperSettings
 {
-    public class MainRepoKeeperInfo : BL.RepoSettings.RepoKeeperInfo
+    public class CustomerRepoKeeperInfo : BL.RepoSettings.RepoKeeperInfo
     {
-        public MainRepoKeeperInfo()
+        public CustomerRepoKeeperInfo()
         {
             // spaceroute
             AddPresetRepo("Edge", ServiceAddress.SpaceRoute + "/edge");
@@ -12,9 +12,6 @@ namespace TransUniverseCorp.RepoKeeperSettings
             AddPresetRepo("ScheduleElement", ServiceAddress.SpaceRoute + "/schedule");
             AddPresetRepo("SpaceObject", ServiceAddress.SpaceRoute + "/spaceobject");
             AddPresetRepo("SpacePort", ServiceAddress.SpaceRoute + "/spaceport");
-
-            // customer
-            AddPresetRepo("Customer", ServiceAddress.Customer + "/customer");
 
             // driver
             AddPresetRepo("Driver", ServiceAddress.Driver + "/driver");

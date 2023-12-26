@@ -97,7 +97,7 @@ namespace BL.ReposImpl
         public User? FindByLogin(string login)
         {
             User result = new() { Id = INVALID_ID };
-            if (!Pull(result, $"findbyname/{login}"))
+            if (!Pull(result, $"findbylogin/{login}"))
                 return null;
             if (result.Id == INVALID_ID) return null;
             return result;

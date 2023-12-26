@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Globalization;
 
-CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
-CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+//CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+//CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,5 +1,6 @@
 ﻿using BaseAPI;
 using BL;
+using BL.Repos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SpaceRouteService.Controllers
@@ -10,6 +11,22 @@ namespace SpaceRouteService.Controllers
     {
         public EdgeController()
             : base(rk => rk.EdgeRepo) { }
+    }
+
+    [Controller]
+    [Route("order")]
+    public class OrderController : UniversalBaseAPIController<Order>
+    {
+        public OrderController()
+            : base(rk => rk.OrderRepo) { }
+
+        [HttpGet]
+        [Route("ordersbycustomer/{id:int}")]
+        public IActionResult OrdersByCustomer(int? id)
+        {
+            if (id is null) return BadRequest();
+            return PushArray(((IOrderRepo)Repo).GetOrdersByCustomer(id.Value).ToList());
+        }
     }
 
     [Controller]

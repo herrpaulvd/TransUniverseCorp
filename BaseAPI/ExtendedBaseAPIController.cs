@@ -13,9 +13,10 @@ namespace BaseAPI
         [Route("findbyname/{name}")]
         public IActionResult FindByName(string? name)
         {
+            if (name is null) return NotFound();
             try
             {
-                return Push(((IExtendedRepo<T>)Repo).FindByName(name!));
+                return Push(((IExtendedRepo<T>)Repo).FindByName(name));
             }
             catch (Exception)
             {

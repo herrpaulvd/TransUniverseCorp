@@ -53,7 +53,7 @@ namespace UnviersalMV
             }
         }
 
-        public static CommonModel Create<T>() where T : new() => new CommonModel(new T());
+        public static CommonModel Create<T>() where T : new() => new(new T());
 
         public struct PropertyValue
         {
@@ -91,7 +91,10 @@ namespace UnviersalMV
                     (type, step) = ("number", "0.001");
                 else
                     throw new Exception("Internal error");
-                result.Add(new PropertyValue(name, p.GetValue(origin)?.ToString() ?? "", type, step));
+                var svalue = p.GetValue(origin)?.ToString() ?? "";
+                if (IsFloat(p))
+                    svalue = svalue.Replace(',', '.');
+                result.Add(new PropertyValue(name, svalue, type, step));
             }
             return result;
         }
@@ -132,10 +135,15 @@ namespace UnviersalMV
             {
                 try
                 {
-                    p.SetValue(origin, Convert.ChangeType(value, p.PropertyType));
+                    if (IsFloat(p!)) value = value.Replace('.', ',');
+                    var conv = Convert.ChangeType(value, p.PropertyType);
+                    p.SetValue(origin, conv);
                     return true;
                 }
-                catch (Exception) { }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
             return false;
         }

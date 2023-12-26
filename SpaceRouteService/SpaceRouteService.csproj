@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BaseAPI\BaseAPI.csproj" />
     <ProjectReference Include="..\BL\BL.csproj" />
+    <ProjectReference Include="..\SharedModels\SharedModels.csproj" />
     <ProjectReference Include="..\UnviersalMV\UnviersalMV.csproj" />
   </ItemGroup>
 

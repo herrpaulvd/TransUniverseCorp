@@ -3,9 +3,9 @@ using BL;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using TransUniverseCorp.Algorithm;
 using Microsoft.Extensions.Hosting;
 using TransUniverseCorp.Models;
+using SharedModels;
 
 namespace TransUniverseCorp.Controllers
 {
@@ -17,10 +17,6 @@ namespace TransUniverseCorp.Controllers
         private ICustomerRepo CustomerRepo => RepoKeeper.Instance.CustomerRepo;
         private IOrderRepo OrderRepo => RepoKeeper.Instance.OrderRepo;
         private IScheduleElementRepo ScheduleElementRepo => RepoKeeper.Instance.ScheduleElementRepo;
-        private IDriverRepo DriverRepo => RepoKeeper.Instance.DriverRepo;
-        private ISpaceshipRepo SpaceshipRepo => RepoKeeper.Instance.SpaceshipRepo;
-        private ISpaceObjectRepo SpaceObjectRepo => RepoKeeper.Instance.SpaceObjectRepo;
-        private ISpacePortRepo SpacePortRepo => RepoKeeper.Instance.SpacePortRepo;
 
         private Customer? GetCustomerData()
         {
@@ -65,59 +61,12 @@ namespace TransUniverseCorp.Controllers
         [Route("commit")]
         public IActionResult Commit()
         {
-            int index = int.Parse(Request.Form["index"]!);
-            lock(ObjectKeeper.Instance)
+            string index = Request.Form["index"]!;
+            using(HttpClient client = new())
             {
-                var model = (OrderModel)ObjectKeeper.Instance.Get(index)!;
-                ObjectKeeper.Instance.Free(index);
-                Order order = new()
-                {
-                    Customer = UserRepo.FindByLogin(User.FindFirst(ClaimsIdentity.DefaultNameClaimType)!.Value)!.Customer!.Value,
-                    Driver = model.Driver.Id,
-                    Spaceship = model.Spaceship.Id,
-                    LoadingPort = model.LoadingPort.Id,
-                    LoadingTime = model.LoadingTime,
-                    UnloadingPort = model.UnloadingPort.Id,
-                    UnloadingTime = model.UnloadingTime,
-                    TotalCost = model.Cost,
-                    TotalTime = model.TotalTime,
-                    Volume = model.Volume,
-                    Status = Order.STATUS_WIP
-                };
-                var first = model.ScheduleElements[0];
-                first.Id = ScheduleElementRepo.Add(first);
-                order.CurrentState = first.Id;
-                order.Id = OrderRepo.Add(order);
-                bool driverset = first.Driver is not null;
-                bool spaceshipset = first.Spaceship is not null;
-                if (driverset) model.Driver.CurrentState = first.Id;
-                if(spaceshipset) model.Spaceship.CurrentState = first.Id;
-
-                for(int i = 1; i < model.ScheduleElements.Count; i++)
-                {
-                    var curr = model.ScheduleElements[i];
-                    first.Next = curr.Id = ScheduleElementRepo.Add(curr);
-                    if(!driverset)
-                    {
-                        model.Driver.CurrentState = curr.Id;
-                        driverset = true;
-                    }
-                    if(!spaceshipset)
-                    {
-                        model.Spaceship.CurrentState = curr.Id;
-                        spaceshipset = true;
-                    }
-                    first = curr;
-                }
-
-                foreach(var e in model.ScheduleElements)
-                {
-                    e.Order = order.Id;
-                    ScheduleElementRepo.Update(e);
-                }
-                DriverRepo.Update(model.Driver);
-                SpaceshipRepo.Update(model.Spaceship);
-                return Redirect("./");
+                HttpRequestMessage request = new(HttpMethod.Post, ServiceAddress.SpaceRoute + "/makeorder/commit/" + index);
+                var response = client.SendAsync(request).Result;
+                return Redirect("/orderlist");
             }
         }
 
@@ -126,40 +75,34 @@ namespace TransUniverseCorp.Controllers
         public IActionResult NewOrder()
         {
             var form = Request.Form;
-            var loadingPort = SpacePortRepo.FindByName(form["loading"]!);
-            if (loadingPort is null) return IndexWithError("Invalid loading port");
+            string loadingPortName = form["loading"]!;
             if (!DateTime.TryParse(form["ltime"]!, out var ltime))
                 return IndexWithError("Invalid loading time");
-            var unloadingPort = SpacePortRepo.FindByName(form["unloading"]!);
-            if (loadingPort is null) return IndexWithError("Invalid unloading port");
+            string unloadingPortName = form["unloading"]!;
             if (!DateTime.TryParse(form["utime"]!, out var utime))
                 return IndexWithError("Invalid unloading time");
             if (!long.TryParse(form["volume"]!, out long volume))
                 return IndexWithError("Invalid volume");
 
-            lock(ObjectKeeper.Instance)
+            using(HttpClient client = new())
             {
-                var (scheduleElements, cost, time, driver, spaceship) = PlanetGraph.GetBestWay(loadingPort, unloadingPort, ltime.Ticks, utime.Ticks, volume);
-                if (scheduleElements is null || driver is null || spaceship is null)
-                    return IndexWithError("Cannot make order: not enough time or free drivers/spaceships or destination is unreachable");
-                if (scheduleElements.Count == 0)
-                    return IndexWithError("The order is too primitive");
-                OrderModel model = new()
+                HttpRequestMessage request = new(HttpMethod.Post, ServiceAddress.SpaceRoute + "/makeorder")
                 {
-                    Cost = cost,
-                    Driver = driver,
-                    Spaceship = spaceship,
-                    LoadingPort = loadingPort,
-                    UnloadingPort = unloadingPort,
-                    ScheduleElements = scheduleElements,
-                    LoadingTime = ltime.Ticks,
-                    UnloadingTime = utime.Ticks,
-                    TotalTime = time,
-                    Volume = volume
+                    Content = JsonContent.Create(new BuildOrderRequest()
+                    {
+                        LoadingPortName = loadingPortName,
+                        LoadingTime = ltime.Ticks,
+                        UnloadingPortName = unloadingPortName,
+                        UnloadingTime = utime.Ticks,
+                        Volume = volume,
+                        Customer = UserRepo.FindByLogin(User.FindFirst(ClaimsIdentity.DefaultNameClaimType)!.Value)!.Customer!.Value
+                    })
                 };
-                int index = ObjectKeeper.Instance.Keep(model);
-                model.Index = index;
-                return View("Commit", model);
+                var response = client.SendAsync(request).Result;
+                if (response.IsSuccessStatusCode)
+                    return View("Commit", response.Content.ReadFromJsonAsync<ShortOrderModel>().Result);
+                else
+                    return IndexWithError("Cannot make order: invalid data or not enough time or free drivers/spaceships or destination is unreachable");
             }
         }
     }

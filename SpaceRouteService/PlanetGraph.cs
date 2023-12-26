@@ -1,7 +1,7 @@
 ﻿using BL;
 using BL.Repos;
 
-namespace TransUniverseCorp.Algorithm
+namespace SpaceRouteService
 {
     internal static class PlanetGraph
     {
@@ -31,14 +31,14 @@ namespace TransUniverseCorp.Algorithm
                     d.Add(p, inf);
             Dictionary<int, Edge> lastEdge = [];
             SortedSet<(long, int)> queue = new(d.Select(kv => (kv.Value, kv.Key)));
-            while(queue.Count > 0)
+            while (queue.Count > 0)
             {
                 var (dist, planet) = queue.Min;
                 if (dist == inf)
                     return false;
-                if(planet == end)
+                if (planet == end)
                 {
-                    while(planet != start)
+                    while (planet != start)
                     {
                         var e = lastEdge[planet];
                         output.Add(e);
@@ -49,12 +49,12 @@ namespace TransUniverseCorp.Algorithm
                 }
                 queue.Remove((dist, planet));
 
-                foreach(var e in edges[planet])
+                foreach (var e in edges[planet])
                 {
                     var nextp = e.End;
                     var currdist = d[nextp];
                     var newdist = dist + e.Time;
-                    if(newdist < currdist)
+                    if (newdist < currdist)
                     {
                         queue.Remove((currdist, nextp));
                         queue.Add((newdist, nextp));
@@ -76,7 +76,7 @@ namespace TransUniverseCorp.Algorithm
             Dictionary<int, int> planet2port,
             List<ScheduleElement> output)
         {
-            foreach(var e in edges)
+            foreach (var e in edges)
             {
                 currentTime += e.Time;
                 output.Add(new()
@@ -89,11 +89,11 @@ namespace TransUniverseCorp.Algorithm
                     IsStop = false
                 });
             }
-            if(endTime.HasValue)
+            if (endTime.HasValue)
             {
                 long waitingEnd = Math.Max(endTime.Value, currentTime);
                 long waitingTime = waitingEnd - currentTime;
-                if(waitingTime > 0)
+                if (waitingTime > 0)
                     output.Add(new()
                     {
                         Time = waitingTime,
@@ -145,7 +145,7 @@ namespace TransUniverseCorp.Algorithm
             if (nextTime > startTime)
                 return false;
             edgebuffer.Clear();
-            if(!Dijkstra(graph, spaceshipLocation, loadingLocation, edgebuffer))
+            if (!Dijkstra(graph, spaceshipLocation, loadingLocation, edgebuffer))
                 return false;
             BuildSchedulePart(driver, spaceship, nextTime, startTime, loadingLocation, edgebuffer, planet2Port, output);
             if (output.Count > 0 && output[^1].PlannedDepartureOrArrival!.Value > startTime)
@@ -184,13 +184,13 @@ namespace TransUniverseCorp.Algorithm
                 }).ToArray()!;
             IList<Spaceship> spaceships = RepoKeeper.Instance.SpaceshipRepo.GetAll().Where(s =>
             {
-                if(s!.Volume < volume || s.CurrentState is null) return false;
+                if (s!.Volume < volume || s.CurrentState is null) return false;
                 var current = seRepo.Get(s.CurrentState.Value)!;
                 return current.Order is null && current.IsStop;
             }).ToList()!;
 
             Dictionary<int, int> planet2Port = [];
-            foreach(var port in ports.Values)
+            foreach (var port in ports.Values)
                 if (!planet2Port.ContainsKey(port.Planet))
                     planet2Port.Add(port.Planet, port.Id);
 
@@ -199,8 +199,8 @@ namespace TransUniverseCorp.Algorithm
             Driver? bestDriver = null;
             Spaceship? bestSpaceship = null;
             List<ScheduleElement>? current = null;
-            foreach(var d in drivers)
-                foreach(var s in spaceships)
+            foreach (var d in drivers)
+                foreach (var s in spaceships)
                 {
                     int spaceshipMask = d.SpaceshipClasses & s.Class;
                     if (spaceshipMask != 0)
@@ -219,7 +219,7 @@ namespace TransUniverseCorp.Algorithm
                             current))
                         {
                             long currentCost = BuildCost(current, d.HiringCost, s.UsageCost);
-                            if(result is null || currentCost < bestCost)
+                            if (result is null || currentCost < bestCost)
                             {
                                 bestCost = currentCost;
                                 bestDriver = d;

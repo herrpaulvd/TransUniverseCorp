@@ -4,13 +4,13 @@
 @{
 }
 
-@model OrderModel
+@model SharedModels.ShortOrderModel
 
 <div>Commit order:</div>
 
 <form method="post" action="./orderlist/commit">
-    <input type="text" name="driver" value="@Model.Driver.Name" readonly="readonly" />
-    <input type="text" name="spaceship" value="@Model.Spaceship.Name" readonly="readonly" />
+    <input type="text" name="driver" value="@Model.DriverName" readonly="readonly" />
+    <input type="text" name="spaceship" value="@Model.SpaceshipName" readonly="readonly" />
     <input type="number" name="cost" value="@Model.Cost" readonly="readonly" />
     <input type="hidden" name="index" value="@Model.Index" readonly="readonly" />
     <input type="submit" name="commit" value="COMMIT" />

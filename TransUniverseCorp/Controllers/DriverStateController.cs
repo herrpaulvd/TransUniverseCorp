@@ -18,12 +18,16 @@ namespace TransUniverseCorp.Controllers
         private ISpacePortRepo SpacePortRepo => RepoKeeper.Instance.SpacePortRepo;
         private ISpaceshipRepo SpaceshipRepo => RepoKeeper.Instance.SpaceshipRepo;
 
+        private int? GetDriverId()
+        {
+            return UserRepo.FindByLogin(User.FindFirst(ClaimsIdentity.DefaultNameClaimType)!.Value)!.Driver;
+        }
+
         private Driver? GetDriverData()
         {
-            var user = UserRepo.FindByLogin(User.FindFirst(ClaimsIdentity.DefaultNameClaimType)!.Value)!;
-            if (user.Driver is null)
-                return null;
-            return DriverRepo.Get(user.Driver.Value)!;
+            var id = GetDriverId();
+            if (id is null) return null;
+            return DriverRepo.Get(id.Value)!;
         }
 
         private ScheduleElement? GetScheduleElement(Driver driver)
@@ -51,85 +55,36 @@ namespace TransUniverseCorp.Controllers
         [Route("leave")]
         public IActionResult Leave()
         {
-            var driver = GetDriverData()!;
-            var current = GetScheduleElement(driver);
-            if (current is not null && current.Order is not null)
+            int? id = GetDriverId();
+            if(id is null) return Redirect("../.?error=NOT%20A%20DRIVER");
+            string port = Request.Form["port"]!;
+            port = "p" + (port ?? "");
+            using(HttpClient client = new())
             {
-                var order = OrderRepo.Get(current.Order.Value)!;
-                order.Status = Order.STATUS_FAILED;
-                OrderRepo.Update(order);
-            }
-
-            string portname = Request.Form["port"]!;
-            SpacePort? port;
-            if(portname == "")
-            {
-                driver.CurrentState = null;
-            }
-            else
-            {
-                port = SpacePortRepo.FindByName(portname);
-                if (port is null)
+                HttpRequestMessage request = new(HttpMethod.Post, $"{ServiceAddress.Driver}/drvst/leave/{id.Value}/{port}");
+                var response = client.SendAsync(request).Result;
+                if(response is null)
                     return Redirect("../.?error=INVALID%20PORT");
-                ScheduleElement next = new()
-                {
-                    IsStop = true,
-                    DepartureOrArrival = DateTime.Now.Ticks,
-                    DestinationOrStop = port.Id,
-                    Driver = driver.Id,
-                    Spaceship = null,
-                    Next = null,
-                    Order = null,
-                    PlannedDepartureOrArrival = null
-                };
-                driver.CurrentState = ScheduleElementRepo.Add(next);
+                else
+                    return Redirect("../");
             }
-            DriverRepo.Update(driver);
-            return Redirect("../");
         }
 
         [HttpPost]
         [Route("next")]
         public IActionResult Next()
         {
-            var driver = GetDriverData()!;
-            var current = GetScheduleElement(driver);
-            if(current is null || current.Order is null)
-                return Redirect("./.?error=INVALID%20OPERATION");
-            var order = OrderRepo.Get(current.Order.Value)!;
-            if(current.Next is null)
+            int? id = GetDriverId();
+            if (id is null) return Redirect("../.?error=INVALID%20OPERATION");
+            using (HttpClient client = new())
             {
-                order.Status = Order.STATUS_DONE;
-                ScheduleElement stop = new()
-                {
-                    DestinationOrStop = current.DestinationOrStop,
-                    Driver = driver.Id,
-                    Spaceship = current.Spaceship,
-                    Order = null,
-                    IsStop = true,
-                };
-                int stopIndex = ScheduleElementRepo.Add(stop);
-                driver.CurrentState = stopIndex;
-                var spaceship = SpaceshipRepo.Get(current.Spaceship!.Value)!;
-                spaceship.CurrentState = stopIndex;
-                DriverRepo.Update(driver);
-                SpaceshipRepo.Update(spaceship);
+                HttpRequestMessage request = new(HttpMethod.Post, $"{ServiceAddress.Driver}/drvst/next/{id.Value}");
+                var response = client.SendAsync(request).Result;
+                if (response is null)
+                    return Redirect("../.?error=INVALID%20OPERATION");
+                else
+                    return Redirect("../");
             }
-            else
-            {
-                var next = ScheduleElementRepo.Get(current.Next.Value)!;
-                order.CurrentState = next.Id;
-                driver.CurrentState = next.Id;
-                if(next.Spaceship is not null)
-                {
-                    var spaceship = SpaceshipRepo.Get(next.Spaceship.Value)!;
-                    spaceship.CurrentState = next.Id;
-                    SpaceshipRepo.Update(spaceship);
-                }
-                DriverRepo.Update(driver);
-            }
-            OrderRepo.Update(order);
-            return Redirect("../");
         }
     }
 }
