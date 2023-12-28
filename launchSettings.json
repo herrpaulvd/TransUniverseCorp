@@ -1,0 +1,16 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "serviceActions": {
+        "transuniversecorp": "StartDebugging",
+        "customerservice": "StartDebugging",
+        "driverservice": "StartDebugging",
+        "identityserver": "StartDebugging",
+        "spacerouteservice": "StartDebugging",
+        "userservice": "StartDebugging"
+      }
+    }
+  }
+}

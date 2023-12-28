@@ -1,0 +1,56 @@
+version: '3.4'
+
+services:
+  transuniversecorp:
+    image: ${DOCKER_REGISTRY-}transuniversecorp
+    build:
+      context: .
+      dockerfile: TransUniverseCorp/Dockerfile
+    #ports:
+    #  - "22801:8081"
+    #  - "22901:8080"
+
+  customerservice:
+    image: ${DOCKER_REGISTRY-}customerservice
+    build:
+      context: .
+      dockerfile: CustomerService/Dockerfile
+    #ports:
+    #  - "22802:8081"
+    #  - "22902:8080"
+
+  driverservice:
+    image: ${DOCKER_REGISTRY-}driverservice
+    build:
+      context: .
+      dockerfile: DriverService/Dockerfile
+    #ports:
+    #  - "22803:8081"
+    #  - "22903:8080"
+
+  identityserver:
+    image: ${DOCKER_REGISTRY-}identityserver
+    build:
+      context: .
+      dockerfile: IdentityServer/Dockerfile
+    #ports:
+    #  - "22804:8081"
+    #  - "22904:8080"
+
+  spacerouteservice:
+    image: ${DOCKER_REGISTRY-}spacerouteservice
+    build:
+      context: .
+      dockerfile: SpaceRouteService/Dockerfile
+    #ports:
+    #  - "22805:8081"
+    #  - "22905:8080"
+
+  userservice:
+    image: ${DOCKER_REGISTRY-}userservice
+    build:
+      context: .
+      dockerfile: UserService/Dockerfile
+    #ports:
+    #  - "22806:8081"
+    #  - "22906:8080"

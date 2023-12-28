@@ -22,4 +22,7 @@ RUN dotnet publish "./IdentityServer.csproj" -c $BUILD_CONFIGURATION -o /app/pub
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+USER root
+COPY ["IdentityServer/example.com.pfx", "/home"]
+COPY ["IdentityServer/example.com.key", "/home"]
 ENTRYPOINT ["dotnet", "IdentityServer.dll"]

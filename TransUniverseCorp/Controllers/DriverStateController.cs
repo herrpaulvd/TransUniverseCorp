@@ -52,9 +52,12 @@ namespace TransUniverseCorp.Controllers
             return View(ConstructData(error));
         }
 
+        private static HttpClientHandler MakeHandler()
+            => new() { ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true };
+
         private bool SetAccessToken(HttpClient mainClient)
         {
-            using HttpClient client = new();
+            using HttpClient client = new(MakeHandler());
             var disco = client.GetDiscoveryDocumentAsync(ServiceAddress.IdentityServer).Result;
             if (disco.IsError) return false;
             var tokenResponse = client.RequestClientCredentialsTokenAsync(new()
@@ -77,7 +80,7 @@ namespace TransUniverseCorp.Controllers
             if(id is null) return Redirect("/drvst?error=NOT%20A%20DRIVER");
             string port = Request.Form["port"]!;
             port = "p" + (port ?? "");
-            using(HttpClient client = new())
+            using(HttpClient client = new(MakeHandler()))
             {
                 if(!SetAccessToken(client)) return Redirect("/drvst?error=SERVICE%20UNAVAIlABLE");
                 HttpRequestMessage request = new(HttpMethod.Post, $"{ServiceAddress.Driver}/drvst/leave/{id.Value}/{port}");
@@ -95,7 +98,7 @@ namespace TransUniverseCorp.Controllers
         {
             int? id = GetDriverId();
             if (id is null) return Redirect("/drvst?error=INVALID%20OPERATION");
-            using (HttpClient client = new())
+            using (HttpClient client = new(MakeHandler()))
             {
                 if (!SetAccessToken(client)) return Redirect("/drvst?error=SERVICE%20UNAVAIlABLE");
                 HttpRequestMessage request = new(HttpMethod.Post, $"{ServiceAddress.Driver}/drvst/next/{id.Value}");

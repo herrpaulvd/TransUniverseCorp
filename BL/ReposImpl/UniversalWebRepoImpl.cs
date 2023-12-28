@@ -26,9 +26,12 @@ namespace BL.ReposImpl
             this.url = url;
         }
 
+        private static HttpClientHandler MakeHandler()
+            => new() { ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true };
+
         private bool SetAccessToken(HttpClient mainClient)
         {
-            using HttpClient client = new();
+            using HttpClient client = new(MakeHandler());
             var disco = client.GetDiscoveryDocumentAsync(ServiceAddress.IdentityServer).Result;
             if (disco.IsError) return false;
             var tokenResponse = client.RequestClientCredentialsTokenAsync(new()
@@ -45,7 +48,7 @@ namespace BL.ReposImpl
 
         protected string? PushString(string s, string suburl)
         {
-            using (var client = new HttpClient())
+            using (var client = new HttpClient(MakeHandler()))
             {
                 if(!SetAccessToken(client)) return null;
                 HttpRequestMessage request = new(HttpMethod.Post, url + suburl)
@@ -78,7 +81,7 @@ namespace BL.ReposImpl
 
         protected string? PullString(string suburl)
         {
-            using (var client = new HttpClient())
+            using (var client = new HttpClient(MakeHandler()))
             {
                 if(!SetAccessToken(client)) return null;
                 HttpRequestMessage request = new(HttpMethod.Get, url + suburl);
