@@ -58,9 +58,12 @@ namespace TransUniverseCorp.Controllers
             return IndexWithError(error);
         }
 
+        private static HttpClientHandler MakeHandler()
+            => new() { ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true };
+
         private bool SetAccessToken(HttpClient mainClient)
         {
-            using HttpClient client = new();
+            using HttpClient client = new(MakeHandler());
             var disco = client.GetDiscoveryDocumentAsync(ServiceAddress.IdentityServer).Result;
             if (disco.IsError) return false;
             var tokenResponse = client.RequestClientCredentialsTokenAsync(new()
@@ -80,7 +83,7 @@ namespace TransUniverseCorp.Controllers
         public IActionResult Commit()
         {
             string index = Request.Form["index"]!;
-            using(HttpClient client = new())
+            using(HttpClient client = new(MakeHandler()))
             {
                 if (!SetAccessToken(client)) return Redirect("/orderlist?error=SERVICE%20UNAVAILABLE");
                 HttpRequestMessage request = new(HttpMethod.Post, ServiceAddress.SpaceRoute + "/makeorder/commit/" + index);
@@ -103,7 +106,7 @@ namespace TransUniverseCorp.Controllers
             if (!long.TryParse(form["volume"]!, out long volume))
                 return IndexWithError("Invalid volume");
 
-            using(HttpClient client = new())
+            using(HttpClient client = new(MakeHandler()))
             {
                 if (!SetAccessToken(client)) return Redirect("/orderlist?error=SERVICE%20UNAVAILABLE");
                 HttpRequestMessage request = new(HttpMethod.Post, ServiceAddress.SpaceRoute + "/makeorder")

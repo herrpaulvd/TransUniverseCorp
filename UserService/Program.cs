@@ -10,11 +10,10 @@ builder.Services.AddControllers();
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
+        options.BackchannelHttpHandler = new HttpClientHandler() { ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true };
         options.RequireHttpsMetadata = false;
         options.Authority = BL.ServiceAddress.IdentityServer;
         options.IncludeErrorDetails = true;
-        //options.UseSecurityTokenValidators = false;
-        //options.BackchannelHttpHandler = new HttpClientHandler() { ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true };
         options.TokenValidationParameters = new()
         {
             ValidateAudience = false,
@@ -23,16 +22,6 @@ builder.Services.AddAuthentication("Bearer")
             IssuerSigningKeyValidator = null,
             IssuerSigningKeyResolverUsingConfiguration = null,
             RequireSignedTokens = false,
-            //IssuerSigningKey = null,
-            //SignatureValidator = delegate (string token, TokenValidationParameters parameters)
-            //{
-            //    var jwt = new JwtSecurityToken(token);
-            //
-            //    return jwt;
-            //},
-            //ValidateActor = false,
-            //ValidIssuer = BL.ServiceAddress.IdentityServer,
-            //IssuerSigningKey = new X509SecurityKey(GetSigningCertificate())
         };
     });
 builder.Services.AddAuthorization(options =>

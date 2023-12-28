@@ -1,3 +1,7 @@
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,8 +10,19 @@ builder.Services.AddControllers();
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
+        options.BackchannelHttpHandler = new HttpClientHandler() { ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true };
+        options.RequireHttpsMetadata = false;
         options.Authority = BL.ServiceAddress.IdentityServer;
-        options.TokenValidationParameters = new() { ValidateAudience = false };
+        options.IncludeErrorDetails = true;
+        options.TokenValidationParameters = new()
+        {
+            ValidateAudience = false,
+            ValidateIssuer = false,
+            ValidateIssuerSigningKey = false,
+            IssuerSigningKeyValidator = null,
+            IssuerSigningKeyResolverUsingConfiguration = null,
+            RequireSignedTokens = false,
+        };
     });
 builder.Services.AddAuthorization(options =>
 {
