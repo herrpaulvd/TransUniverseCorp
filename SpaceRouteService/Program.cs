@@ -1,4 +1,5 @@
 using Microsoft.IdentityModel.Tokens;
+using SpaceRouteService.RabbitMQ;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
@@ -36,6 +37,7 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpLogging(o => { });
+builder.Services.AddHostedService<RabbitMQListener>();
 
 var app = builder.Build();
 

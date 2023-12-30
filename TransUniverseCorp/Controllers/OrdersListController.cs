@@ -7,6 +7,12 @@ using Microsoft.Extensions.Hosting;
 using TransUniverseCorp.Models;
 using SharedModels;
 using IdentityModel.Client;
+using Newtonsoft.Json;
+using RabbitMQ.Client;
+using System.Net.Mail;
+using System.Text;
+using System.Net;
+using System.Timers;
 
 namespace TransUniverseCorp.Controllers
 {
@@ -78,54 +84,141 @@ namespace TransUniverseCorp.Controllers
             return true;
         }
 
+        private class UniqueIntKeper
+        {
+            private long id;
+            private UniqueIntKeper() { }
+            private static UniqueIntKeper Instance = new();
+            public static long GetID()
+            {
+                lock(Instance) { return Instance.id++; }
+            }
+        }
+
         [HttpPost]
         [Route("commit")]
         public IActionResult Commit()
         {
-            string index = Request.Form["index"]!;
+            long ID = long.Parse(Request.Form["ID"]!);
+            int index = int.Parse(Request.Form["index"]!);
             using(HttpClient client = new(MakeHandler()))
             {
                 if (!SetAccessToken(client)) return Redirect("/orderlist?error=SERVICE%20UNAVAILABLE");
                 HttpRequestMessage request = new(HttpMethod.Post, ServiceAddress.SpaceRoute + "/makeorder/commit/" + index);
                 var response = client.SendAsync(request).Result;
-                return Redirect("/orderlist");
+                requests.Remove(ID);
+                return Redirect("/orderlist/performedorders");
             }
         }
+
+        [HttpPost]
+        [Route("discard")]
+        public IActionResult Discard()
+        {
+            long ID = long.Parse(Request.Form["ID"]!);
+            int index = int.Parse(Request.Form["index"]!);
+            using (HttpClient client = new(MakeHandler()))
+            {
+                if (!SetAccessToken(client)) return Redirect("/orderlist?error=SERVICE%20UNAVAILABLE");
+                HttpRequestMessage request = new(HttpMethod.Post, ServiceAddress.SpaceRoute + "/makeorder/discard/" + index);
+                var response = client.SendAsync(request).Result;
+                requests.Remove(ID);
+                return Redirect("/orderlist/performedorders");
+            }
+        }
+
+        private static void Send<T>(T obj)
+        {
+            var factory = new ConnectionFactory()
+            {
+                HostName = ServiceAddress.QueueServer,
+                Port = ServiceAddress.QueuePort,
+                UserName = ServiceAddress.QueueUser,
+                Password = ServiceAddress.QueuePassword,
+            };
+            using var connection = factory.CreateConnection();
+            using var channel = connection.CreateModel();
+            channel.QueueDeclare(queue: ServiceAddress.QueueName,
+                                    durable: false,
+                                    exclusive: false,
+                                    autoDelete: false,
+                                    arguments: null);
+            string message = JsonConvert.SerializeObject(obj);
+            var body = Encoding.UTF8.GetBytes(message);
+
+            channel.BasicPublish(exchange: "",
+                                    routingKey: ServiceAddress.QueueName,
+                                    basicProperties: null,
+                                    body: body);
+        }
+
+        private static Dictionary<long, BuildOrderRequest> requests = new();
 
         [HttpPost]
         [Route("")]
         public IActionResult NewOrder()
         {
-            var form = Request.Form;
-            string loadingPortName = form["loading"]!;
-            if (!DateTime.TryParse(form["ltime"]!, out var ltime))
-                return IndexWithError("Invalid loading time");
-            string unloadingPortName = form["unloading"]!;
-            if (!DateTime.TryParse(form["utime"]!, out var utime))
-                return IndexWithError("Invalid unloading time");
-            if (!long.TryParse(form["volume"]!, out long volume))
-                return IndexWithError("Invalid volume");
-
-            using(HttpClient client = new(MakeHandler()))
+            lock(requests)
             {
-                if (!SetAccessToken(client)) return Redirect("/orderlist?error=SERVICE%20UNAVAILABLE");
-                HttpRequestMessage request = new(HttpMethod.Post, ServiceAddress.SpaceRoute + "/makeorder")
+                var form = Request.Form;
+                string loadingPortName = form["loading"]!;
+                if (!DateTime.TryParse(form["ltime"]!, out var ltime))
+                    return IndexWithError("Invalid loading time");
+                string unloadingPortName = form["unloading"]!;
+                if (!DateTime.TryParse(form["utime"]!, out var utime))
+                    return IndexWithError("Invalid unloading time");
+                if (!long.TryParse(form["volume"]!, out long volume))
+                    return IndexWithError("Invalid volume");
+                BuildOrderRequest r = new()
                 {
-                    Content = JsonContent.Create(new BuildOrderRequest()
-                    {
-                        LoadingPortName = loadingPortName,
-                        LoadingTime = ltime.Ticks,
-                        UnloadingPortName = unloadingPortName,
-                        UnloadingTime = utime.Ticks,
-                        Volume = volume,
-                        Customer = UserRepo.FindByLogin(User.FindFirst(ClaimsIdentity.DefaultNameClaimType)!.Value)!.Customer!.Value
-                    })
+                    LoadingPortName = loadingPortName,
+                    LoadingTime = ltime.Ticks,
+                    UnloadingPortName = unloadingPortName,
+                    UnloadingTime = utime.Ticks,
+                    Volume = volume,
+                    Customer = UserRepo.FindByLogin(User.FindFirst(ClaimsIdentity.DefaultNameClaimType)!.Value)!.Customer!.Value,
+                    ID = UniqueIntKeper.GetID()
                 };
-                var response = client.SendAsync(request).Result;
-                if (response.IsSuccessStatusCode)
-                    return View("Commit", response.Content.ReadFromJsonAsync<ShortOrderModel>().Result);
-                else
-                    return IndexWithError("Cannot make order: invalid data or not enough time or free drivers/spaceships or destination is unreachable");
+                Send(r);
+                requests.Add(r.ID, r);
+                return Redirect("/orderlist/performedorders");
+            }
+        }
+
+        [HttpGet]
+        [Route("performedorders")]
+        public IActionResult GetPerformedOrders()
+        {
+            int customer = UserRepo.FindByLogin(User.FindFirst(ClaimsIdentity.DefaultNameClaimType)!.Value)!.Customer!.Value;
+            lock (requests)
+            {
+                List<ShortOrderModel> toview = new();
+                foreach(var kv in requests)
+                {
+                    if (kv.Value.Customer != customer) continue;
+                    using HttpClient client = new(MakeHandler());
+                    if(!SetAccessToken(client)) return Redirect("/orderlist?error=SERVICE%20UNAVAILABLE");
+                    HttpRequestMessage request = new(HttpMethod.Get, $"{ServiceAddress.SpaceRoute}/makeorder/askorder/{kv.Key}");
+                    var response = client.SendAsync(request).Result;
+                    ShortOrderModel model;
+                    if(response.IsSuccessStatusCode)
+                    {
+                        model = response.Content.ReadFromJsonAsync<ShortOrderModel>().Result!;
+                    }
+                    else
+                    {
+                        model = new ShortOrderModel()
+                        {
+                            DriverName = "",
+                            SpaceshipName = "",
+                            Error = $"Order #{kv.Key} is in queue",
+                            ID = kv.Key,
+                            Discardable = false,
+                        };
+                    }
+                    toview.Add(model);
+                }
+                return View("PerformedOrders", toview);
             }
         }
     }

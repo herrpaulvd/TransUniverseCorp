@@ -122,6 +122,7 @@ namespace SpaceRouteService
             int spaceshipMask,
             List<ScheduleElement> output)
         {
+            Thread.Sleep(30_000);
             Dictionary<int, List<Edge>> graph = [];
             Dictionary<int, List<Edge>> fullgraph = [];
             foreach (var p in planet2Port.Keys)

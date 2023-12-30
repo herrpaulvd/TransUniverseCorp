@@ -19,6 +19,11 @@ namespace BL
         public const string Driver = "https://driverservice:8081";
         public const string User = "https://userservice:8081";
         public const string IdentityServer = "https://identityserver:8081";
+        public const string QueueServer = "rabbitmq";
+        public const int QueuePort = 5672;
+        public const string QueueName = "orderqueue";
+        public const string QueueUser = "krolik";
+        public const string QueuePassword = "morkov";
 
         public const string IdentitySecret = "superpupersecurepassword228";
     }

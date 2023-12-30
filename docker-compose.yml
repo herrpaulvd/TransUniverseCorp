@@ -1,6 +1,16 @@
 version: '3.4'
 
 services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: rabbitmq
+
+  dbsqlserver:
+    image: ${DOCKER_REGISTRY-}db
+    build:
+      context: .
+      dockerfile: DB/Dockerfile
+
   transuniversecorp:
     image: ${DOCKER_REGISTRY-}transuniversecorp
     build:

@@ -16,5 +16,8 @@ namespace SpaceRouteService.Models
         public long TotalTime { get; set; }
         public long Volume { get; set; }
         public int Customer { get; set; }
+        public long ID { get; set; }
+        public bool Ready { get; set; }
+        public bool Discarded { get; set; }
     }
 }

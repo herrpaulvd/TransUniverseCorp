@@ -14,5 +14,6 @@ namespace SharedModels
         public long UnloadingTime { get; set; }
         public long Volume { get; set; }
         public int Customer { get; set; }
+        public long ID { get; set; }
     }
 }

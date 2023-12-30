@@ -1,6 +1,16 @@
 version: '3.4'
 
 services:
+  rabbitmq:
+    environment:
+      - RABBITMQ_DEFAULT_USER=krolik
+      - RABBITMQ_DEFAULT_PASS=morkov
+    ports:
+      - 22872:15672
+      - 22972:5672
+  dbsqlserver:
+    ports:
+      - "22888:1433"
   transuniversecorp:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
