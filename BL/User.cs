@@ -46,4 +46,8 @@ public partial class User : IBLEntity
         get => Helper.Int2Classes(Roles);
         set => Roles = Helper.Classes2Int(value);
     }
+
+    public bool CheckConsistency() => Customer.CheckCustomer() && Driver.CheckDriver();
+
+    public bool CheckConsistencyOnDelete() => true;
 }

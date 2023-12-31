@@ -49,4 +49,13 @@ public partial class SpaceObject : INamedBLEntity
     }
 
     public int SystemPosition { get; set; }
+
+    public bool CheckConsistency() => SystemCenter.CheckSpaceObject();
+
+    public bool CheckConsistencyOnDelete() =>
+        Id.CheckEdgeOnDelete(e => e.Start)
+        && Id.CheckEdgeOnDelete(e => e.End)
+        && Id.CheckSpaceObjectOnDelete(so => so.SystemCenter)
+        && Id.CheckSpacePortOnDelete(p => p.Planet);
+
 }

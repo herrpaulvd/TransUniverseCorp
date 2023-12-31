@@ -104,4 +104,14 @@ public partial class Order : IBLEntity
     public const int STATUS_FAILED = -1;
     public const int STATUS_WIP = 0;
     public const int STATUS_DONE = 1;
+
+    public bool CheckConsistency() =>
+        LoadingPort.CheckSpacePort()
+        && UnloadingPort.CheckSpacePort()
+        && Spaceship.CheckSpaceship()
+        && Driver.CheckDriver()
+        && Customer.CheckCustomer()
+        && CurrentState.CheckScheduleElement();
+
+    public bool CheckConsistencyOnDelete() => Id.CheckScheduleElementOnDelete(se => se.Order);
 }

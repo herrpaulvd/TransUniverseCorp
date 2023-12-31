@@ -49,4 +49,11 @@ public partial class Driver : INamedBLEntity
         get => Helper.State2Int(CurrentState);
         set => CurrentState = Helper.Int2State(value);
     }
+
+    public bool CheckConsistency() => CurrentState.CheckScheduleElement();
+
+    public bool CheckConsistencyOnDelete() =>
+        Id.CheckOrderOnDelete(o => o.Driver)
+        && Id.CheckScheduleElementOnDelete(o => o.Driver)
+        && Id.CheckUserOnDelete(o => o.Driver);
 }

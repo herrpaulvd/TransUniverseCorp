@@ -9,5 +9,9 @@ namespace BL
     public interface IBLEntity
     {
         public int Id { get; set; }
+
+        public bool CheckConsistency();
+
+        public bool CheckConsistencyOnDelete();
     }
 }

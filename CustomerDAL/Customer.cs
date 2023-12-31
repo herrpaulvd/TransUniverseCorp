@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Entities;
+namespace CustomerDAL;
 
-public partial class Customer : INamedDALEntity
+public partial class Customer : Entities.INamedDALEntity
 {
     public int Id { get; set; }
 
@@ -14,8 +14,4 @@ public partial class Customer : INamedDALEntity
     public string Email { get; set; } = null!;
 
     public bool Corporative { get; set; }
-
-    public virtual ICollection<User> Users { get; set; } = new List<User>();
-
-    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 }

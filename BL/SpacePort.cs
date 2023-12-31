@@ -31,4 +31,11 @@ public partial class SpacePort : INamedBLEntity
     public double Latitude { get; set; }
 
     public double Altitude { get; set; }
+
+    public bool CheckConsistency() => Planet.CheckSpaceObject();
+
+    public bool CheckConsistencyOnDelete() =>
+        Id.CheckOrderOnDelete(o => o.LoadingPort)
+        && Id.CheckOrderOnDelete(o => o.UnloadingPort)
+        && Id.CheckScheduleElementOnDelete(se => se.DestinationOrStop);
 }

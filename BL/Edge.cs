@@ -61,4 +61,8 @@ public partial class Edge : IBLEntity
         get => Helper.Int2Classes(QualificationClasses);
         set => QualificationClasses = Helper.Classes2Int(value);
     }
+
+    public bool CheckConsistency() => Start.CheckSpaceObject() && End.CheckSpaceObject();
+
+    public bool CheckConsistencyOnDelete() => true;
 }

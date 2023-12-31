@@ -16,12 +16,12 @@ namespace BL.ReposImpl
         where TBLEntity : class, IBLEntity, new()
         where TDALEntity : class, IDALEntity, new()
     {
-        protected TransUniverseDbContext context;
+        protected DbContext context;
         protected DbSet<TDALEntity> entities;
 
-        protected UniversalRepoImpl(Func<TransUniverseDbContext, DbSet<TDALEntity>> getEntities)
+        protected UniversalRepoImpl(DbContext context, Func<DbContext, DbSet<TDALEntity>> getEntities)
         {
-            context = new();
+            this.context = context;
             entities = getEntities(context);
         }
 
@@ -30,6 +30,7 @@ namespace BL.ReposImpl
 
         public void Delete(TBLEntity entity)
         {
+            if (!entity.CheckConsistencyOnDelete()) throw new InconsistencyException();
             entities.Remove(GetDalEntity(entity)!);
             context.SaveChanges();
         }
@@ -52,6 +53,7 @@ namespace BL.ReposImpl
 
         public void Update(TBLEntity entity)
         {
+            if (!entity.CheckConsistency()) throw new InconsistencyException();
             var dalEntity = GetDalEntity(entity)!;
             entities.Update(dalEntity);
             context.SaveChanges();
@@ -60,6 +62,7 @@ namespace BL.ReposImpl
 
         public int Add(TBLEntity entity)
         {
+            if (!entity.CheckConsistency()) throw new InconsistencyException();
             var dalEntity = GetDalEntity(entity)!;
             entities.Add(dalEntity);
             context.SaveChanges();

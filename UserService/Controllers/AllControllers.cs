@@ -24,7 +24,7 @@ namespace UserService.Controllers
             {
                 return Push(((IUserRepo)Repo).FindByLogin(login));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return NotFound();
             }

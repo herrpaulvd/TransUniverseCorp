@@ -15,8 +15,8 @@ namespace BL.ReposImpl
         where TBLEntity : class, INamedBLEntity, new()
         where TDALEntity : class, INamedDALEntity, new()
     {
-        protected ExtendedRepoImpl(Func<TransUniverseDbContext, DbSet<TDALEntity>> getEntities)
-            : base(getEntities) { }
+        protected ExtendedRepoImpl(DbContext context, Func<DbContext, DbSet<TDALEntity>> getEntities)
+            : base(context, getEntities) { }
 
         public TBLEntity? FindByName(string name)
         {

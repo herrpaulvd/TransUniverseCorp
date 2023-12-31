@@ -18,4 +18,10 @@ public partial class Customer : INamedBLEntity
     public string Email { get; set; } = null!;
 
     public bool Corporative { get; set; }
+
+    public bool CheckConsistency() => true;
+
+    public bool CheckConsistencyOnDelete() =>
+        Id.CheckOrderOnDelete(o => o.Customer)
+        && Id.CheckUserOnDelete(u => u.Customer);
 }

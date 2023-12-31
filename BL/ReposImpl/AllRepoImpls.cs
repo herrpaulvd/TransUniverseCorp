@@ -1,28 +1,32 @@
 ﻿using BL.Repos;
+using CustomerDAL;
+using DriverDAL;
 using Microsoft.EntityFrameworkCore;
+using SpaceRouteDAL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using UserDAL;
 
 namespace BL.ReposImpl
 {
     // DAL repos
 
-    internal class CustomerRepoImpl : ExtendedRepoImpl<BL.Customer, Entities.Customer>, ICustomerRepo
-    { public CustomerRepoImpl() : base(context => context.Customers) { } }
+    internal class CustomerRepoImpl : ExtendedRepoImpl<BL.Customer, CustomerDAL.Customer>, ICustomerRepo
+    { public CustomerRepoImpl() : base(new CustomerDbContext(), context => ((CustomerDbContext)context).Customers) { } }
 
-    internal class DriverRepoImpl : ExtendedRepoImpl<BL.Driver, Entities.Driver>, IDriverRepo
-    { public DriverRepoImpl() : base(context => context.Drivers) { } }
+    internal class DriverRepoImpl : ExtendedRepoImpl<BL.Driver, DriverDAL.Driver>, IDriverRepo
+    { public DriverRepoImpl() : base(new DriverDbContext(), context => ((DriverDbContext)context).Drivers) { } }
 
-    internal class EdgeRepoImpl : UniversalRepoImpl<BL.Edge, Entities.Edge>, IEdgeRepo
-    { public EdgeRepoImpl() : base(context => context.Edges) { } }
+    internal class EdgeRepoImpl : UniversalRepoImpl<BL.Edge, SpaceRouteDAL.Edge>, IEdgeRepo
+    { public EdgeRepoImpl() : base(new SpaceRouteDbContext(), context => ((SpaceRouteDbContext)context).Edges) { } }
 
-    internal class OrderRepoImpl : UniversalRepoImpl<BL.Order, Entities.Order>, IOrderRepo
+    internal class OrderRepoImpl : UniversalRepoImpl<BL.Order, SpaceRouteDAL.Order>, IOrderRepo
     {
-        public OrderRepoImpl() : base(context => context.Orders) { }
+        public OrderRepoImpl() : base(new SpaceRouteDbContext(), context => ((SpaceRouteDbContext)context).Orders) { }
 
         public ICollection<Order> GetOrdersByCustomer(int customerID)
         {
@@ -34,21 +38,21 @@ namespace BL.ReposImpl
         }
     }
 
-    internal class ScheduleElementRepoImpl : UniversalRepoImpl<BL.ScheduleElement, Entities.ScheduleElement>, IScheduleElementRepo
-    { public ScheduleElementRepoImpl() : base(context => context.ScheduleElements) { } }
+    internal class ScheduleElementRepoImpl : UniversalRepoImpl<BL.ScheduleElement, SpaceRouteDAL.ScheduleElement>, IScheduleElementRepo
+    { public ScheduleElementRepoImpl() : base(new SpaceRouteDbContext(), context => ((SpaceRouteDbContext)context).ScheduleElements) { } }
 
-    internal class SpaceObjectRepoImpl : ExtendedRepoImpl<BL.SpaceObject, Entities.SpaceObject>, ISpaceObjectRepo
-    { public SpaceObjectRepoImpl() : base(context => context.SpaceObjects) { } }
+    internal class SpaceObjectRepoImpl : ExtendedRepoImpl<BL.SpaceObject, SpaceRouteDAL.SpaceObject>, ISpaceObjectRepo
+    { public SpaceObjectRepoImpl() : base(new SpaceRouteDbContext(), context => ((SpaceRouteDbContext)context).SpaceObjects) { } }
 
-    internal class SpacePortRepoImpl : ExtendedRepoImpl<BL.SpacePort, Entities.SpacePort>, ISpacePortRepo
-    { public SpacePortRepoImpl() : base(context => context.SpacePorts) { } }
+    internal class SpacePortRepoImpl : ExtendedRepoImpl<BL.SpacePort, SpaceRouteDAL.SpacePort>, ISpacePortRepo
+    { public SpacePortRepoImpl() : base(new SpaceRouteDbContext(), context => ((SpaceRouteDbContext)context).SpacePorts) { } }
 
-    internal class SpaceshipRepoImpl : ExtendedRepoImpl<BL.Spaceship, Entities.Spaceship>, ISpaceshipRepo
-    { public SpaceshipRepoImpl() : base(context => context.Spaceships) { } }
+    internal class SpaceshipRepoImpl : ExtendedRepoImpl<BL.Spaceship, DriverDAL.Spaceship>, ISpaceshipRepo
+    { public SpaceshipRepoImpl() : base(new DriverDbContext(), context => ((DriverDbContext)context).Spaceships) { } }
 
-    internal class UserRepoImpl : UniversalRepoImpl<BL.User, Entities.User>, IUserRepo
+    internal class UserRepoImpl : UniversalRepoImpl<BL.User, UserDAL.User>, IUserRepo
     {
-        public UserRepoImpl() : base(context => context.Users) { }
+        public UserRepoImpl() : base(new UserDbContext(), context => ((UserDbContext)context).Users) { }
 
         public User? FindByLogin(string login)
         {

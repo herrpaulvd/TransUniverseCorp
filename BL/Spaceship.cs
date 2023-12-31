@@ -40,4 +40,10 @@ public partial class Spaceship : INamedBLEntity
         get => Helper.State2Int(CurrentState);
         set => CurrentState = Helper.Int2State(value);
     }
+
+    public bool CheckConsistency() => CurrentState.CheckScheduleElement();
+
+    public bool CheckConsistencyOnDelete() =>
+        Id.CheckOrderOnDelete(o => o.Spaceship)
+        && Id.CheckScheduleElementOnDelete(se => se.Spaceship);
 }

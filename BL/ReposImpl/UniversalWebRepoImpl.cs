@@ -149,6 +149,7 @@ namespace BL.ReposImpl
 
         public void Delete(TBLEntity entity)
         {
+            if (!entity.CheckConsistencyOnDelete()) throw new InconsistencyException();
             Push(null, $"delete/{entity.Id}");
         }
 
@@ -170,11 +171,13 @@ namespace BL.ReposImpl
 
         public void Update(TBLEntity entity)
         {
+            if (!entity.CheckConsistency()) throw new InconsistencyException();
             Push(entity, $"update/{entity.Id}");
         }
 
         public int Add(TBLEntity entity)
         {
+            if (!entity.CheckConsistency()) throw new InconsistencyException();
             return int.Parse(Push(entity, "add")!);
         }
     }
